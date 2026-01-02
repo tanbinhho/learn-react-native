@@ -42,6 +42,70 @@ To learn more about developing your project with Expo, look at the following res
 - [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
 - [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
 
+## Routes cheatsheet
+
+- Tabs (protected): [app/(protected)/(tabs)](<app/(protected)/(tabs)>)
+- Stack inside tab: [app/(protected)/(tabs)/feed](<app/(protected)/(tabs)/feed>)
+- Modal route: [app/modal.tsx](app/modal.tsx)
+- Not found: [app/+not-found.tsx](app/+not-found.tsx)
+- Dynamic segment: [app/(protected)/user/[id].tsx](<app/(protected)/user/%5Bid%5D.tsx>)
+- Optional catch-all: [app/docs/[[...slug]].tsx](app/docs/%5B%5B...slug%5D%5D.tsx)
+- Drawer example: [app/(protected)/(drawer)](<app/(protected)/(drawer)>)
+- Login (public): [app/(public)/login.tsx](<app/(public)/login.tsx>)
+- Auth guard: [app/(protected)/\_layout.tsx](<app/(protected)/_layout.tsx>)
+
+Start
+
+```bash
+npm install
+# If needed for drawer (first time only):
+npm install @react-navigation/drawer
+npx expo start
+```
+
+## Hot reload (Fast Refresh)
+
+- Fast Refresh is enabled by default in Expo dev builds. Open the dev menu in the app and keep "Fast Refresh" on.
+- Windows tip: If file changes don’t trigger reloads (network/OneDrive folders), use polling:
+
+```bash
+npm run start:poll
+# or directly in PowerShell:
+$env:CHOKIDAR_USEPOLLING=1; npx expo start
+```
+
+- Clear cache if reloads seem stale:
+
+```bash
+npm run start:clear
+```
+
+- Quick reload shortcuts:
+  - Android emulator: double-press R
+  - iOS simulator: Cmd+R
+  - Dev menu: Android (Ctrl+M or shake), iOS (Cmd+D)
+
+## Deep linking & Auth guard
+
+- Scheme: `learnapp` (configured in app.json)
+- Protected screens are under tabs (Home, Explore, Feed). If unauthenticated, you are redirected to `/login` with a `redirect` back to the requested path.
+
+Try a protected deep link after starting the dev server:
+
+```bash
+# Android (Windows): open a protected deep link
+npx uri-scheme open "learnapp://feed/1" --android
+
+# iOS (requires macOS)
+npx uri-scheme open "learnapp://feed/1" --ios
+```
+
+Flow:
+
+- Not logged in → Login opens, preserving the target path.
+- Tap "Login" → Navigates to the original path (e.g., `/feed/1`).
+- Home tab has a "Logout" button.
+
 ## Join the community
 
 Join our community of developers creating universal apps.
