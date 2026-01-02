@@ -1,6 +1,6 @@
-import { queryClient } from "@/lib/react-query/queryClient";
-import { useAuthStore } from "@/store/useAuthStore";
-import { router } from "expo-router";
+import { queryClient } from '@/lib/react-query/queryClient';
+import { useAuthStore } from '@/store/useAuthStore';
+import { router } from 'expo-router';
 
 export const useLogout = () => {
   const { clear } = useAuthStore();
@@ -8,6 +8,6 @@ export const useLogout = () => {
   return async () => {
     await clear();
     queryClient.clear();
-    router.replace("/login");
+    router.replace('/login');
   };
 };

@@ -1,5 +1,5 @@
-import { router } from "expo-router";
-import { Button, Text, View } from "react-native";
+import { router } from 'expo-router';
+import { Button, Text, View } from 'react-native';
 
 export default function FeedScreen() {
   return (
@@ -10,8 +10,8 @@ export default function FeedScreen() {
         title="Go to Post 1"
         onPress={() =>
           router.push({
-            pathname: "/(protected)/(tabs)/feed/[postId]",
-            params: { postId: "1" },
+            pathname: '/(protected)/(tabs)/feed/[postId]',
+            params: { postId: '1' },
           } as const)
         }
       />

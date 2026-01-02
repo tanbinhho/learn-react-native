@@ -1,5 +1,5 @@
-import React from "react";
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import React from 'react';
+import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 
 export function SocialButtons({
   onGoogle,
@@ -16,32 +16,24 @@ export function SocialButtons({
         style={[
           styles.btn,
           {
-            backgroundColor: "rgba(255,255,255,0.92)",
-            borderColor: "rgba(0,0,0,0.06)",
+            backgroundColor: 'rgba(255,255,255,0.92)',
+            borderColor: 'rgba(0,0,0,0.06)',
           },
         ]}
         onPress={onGoogle}
       >
         <Image
           source={{
-            uri: "https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg",
+            uri: 'https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg',
           }}
           style={styles.icon}
         />
       </Pressable>
-      <Pressable
-        style={[styles.btn, { backgroundColor: "#1877f3" }]}
-        onPress={onFacebook}
-      >
-        <Text style={[styles.iconText, { color: "#fff", fontWeight: "800" }]}>
-          f
-        </Text>
+      <Pressable style={[styles.btn, { backgroundColor: '#1877f3' }]} onPress={onFacebook}>
+        <Text style={[styles.iconText, { color: '#fff', fontWeight: '800' }]}>f</Text>
       </Pressable>
-      <Pressable
-        style={[styles.btn, { backgroundColor: "#000" }]}
-        onPress={onApple}
-      >
-        <Text style={[styles.iconText, { color: "#fff" }]}></Text>
+      <Pressable style={[styles.btn, { backgroundColor: '#000' }]} onPress={onApple}>
+        <Text style={[styles.iconText, { color: '#fff' }]}></Text>
       </Pressable>
     </View>
   );
@@ -49,8 +41,8 @@ export function SocialButtons({
 
 const styles = StyleSheet.create({
   row: {
-    flexDirection: "row",
-    justifyContent: "center",
+    flexDirection: 'row',
+    justifyContent: 'center',
     gap: 16,
     marginTop: 8,
   },
@@ -58,18 +50,18 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
     borderWidth: 1,
     elevation: 2,
   },
   icon: {
     width: 28,
     height: 28,
-    resizeMode: "contain",
+    resizeMode: 'contain',
   },
   iconText: {
     fontSize: 28,
-    fontWeight: "600",
+    fontWeight: '600',
   },
 });

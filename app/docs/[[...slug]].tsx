@@ -1,6 +1,6 @@
-import { ThemedText } from "@/components/themed-text";
-import { ThemedView } from "@/components/themed-view";
-import { useLocalSearchParams } from "expo-router";
+import { ThemedText } from '@/components/themed-text';
+import { ThemedView } from '@/components/themed-view';
+import { useLocalSearchParams } from 'expo-router';
 
 export default function DocsCatchAll() {
   const params = useLocalSearchParams<{ slug?: string[] }>();
@@ -8,9 +8,7 @@ export default function DocsCatchAll() {
   return (
     <ThemedView style={{ flex: 1, padding: 16, gap: 8 }}>
       <ThemedText type="title">Docs</ThemedText>
-      <ThemedText>
-        Path segments: {segments.length ? segments.join(" / ") : "(root)"}
-      </ThemedText>
+      <ThemedText>Path segments: {segments.length ? segments.join(' / ') : '(root)'}</ThemedText>
     </ThemedView>
   );
 }

@@ -1,1 +1,1 @@
-export type TokenType = "ACCESS_TOKEN" | "REFRESH_TOKEN";
+export type TokenType = 'ACCESS_TOKEN' | 'REFRESH_TOKEN';

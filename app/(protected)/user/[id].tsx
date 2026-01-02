@@ -1,6 +1,6 @@
-import { ThemedText } from "@/components/themed-text";
-import { ThemedView } from "@/components/themed-view";
-import { useLocalSearchParams } from "expo-router";
+import { ThemedText } from '@/components/themed-text';
+import { ThemedView } from '@/components/themed-view';
+import { useLocalSearchParams } from 'expo-router';
 
 export default function UserProfile() {
   const { id } = useLocalSearchParams<{ id: string }>();

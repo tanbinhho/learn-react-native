@@ -1,13 +1,13 @@
-import { FormInput } from "@/components/ui/form-input";
-import { GradientButton } from "@/components/ui/gradient-button";
-import { SocialButtons } from "@/components/ui/social-buttons";
-import { useLogin } from "@/hooks/auth/useLogin";
-import { useAuthStore } from "@/store/useAuthStore";
-import { Ionicons } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
-import { router, useLocalSearchParams } from "expo-router";
-import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { FormInput } from '@/components/ui/form-input';
+import { GradientButton } from '@/components/ui/gradient-button';
+import { SocialButtons } from '@/components/ui/social-buttons';
+import { useLogin } from '@/hooks/auth/useLogin';
+import { useAuthStore } from '@/store/useAuthStore';
+import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
+import { router, useLocalSearchParams } from 'expo-router';
+import React, { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import {
   Animated,
   Image,
@@ -19,11 +19,12 @@ import {
   Text,
   TouchableOpacity,
   View,
-} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function LoginScreen() {
   const { accessToken, hydrated, hydrate } = useAuthStore();
+  // const toast = useAppToast();
 
   useEffect(() => {
     hydrate();
@@ -37,8 +38,8 @@ export default function LoginScreen() {
     // setValue,
     // watch,
   } = useForm({
-    defaultValues: { username: "mor_2314", password: "83r5^_" },
-    mode: "onTouched",
+    defaultValues: { username: 'mor_2314', password: '83r5^_' },
+    mode: 'onTouched',
   });
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
@@ -46,7 +47,7 @@ export default function LoginScreen() {
 
   const loginMutation = useLogin({
     onSuccess: () => {
-      router.replace((redirect as any) ?? "/");
+      router.replace((redirect as any) ?? '/');
     },
   });
 
@@ -60,7 +61,7 @@ export default function LoginScreen() {
 
   useEffect(() => {
     if (hydrated && accessToken) {
-      router.replace((redirect as any) ?? "/");
+      router.replace((redirect as any) ?? '/');
     }
   }, [hydrated, accessToken, redirect]);
 
@@ -71,25 +72,25 @@ export default function LoginScreen() {
         password: data.password,
       });
     } catch (err: any) {
-      alert(err.message || "Login failed");
+      alert(err.message || 'Login failed');
     }
   };
 
   return (
     <LinearGradient
-      colors={["#0f172a", "#2b176f", "#274bff"]} // deep navy -> indigo -> electric blue
+      colors={['#0f172a', '#2b176f', '#274bff']} // deep navy -> indigo -> electric blue
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
-      style={{ flex: 1 }}
+      className="flex-1"
     >
       <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        className="flex-1"
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         keyboardVerticalOffset={0}
       >
-        <SafeAreaView style={styles.safeArea} edges={["top", "bottom"]}>
+        <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
           <ScrollView
-            contentContainerStyle={{ flexGrow: 1, justifyContent: "center" }}
+            contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
           >
@@ -116,12 +117,10 @@ export default function LoginScreen() {
                   autoCorrect={false}
                   error={errors.username}
                   rules={{
-                    required: "Username is required",
-                    minLength: { value: 3, message: "At least 3 characters" },
+                    required: 'Username is required',
+                    minLength: { value: 3, message: 'At least 3 characters' },
                   }}
-                  icon={
-                    <Ionicons name="person-outline" size={20} color="#cfe3ff" />
-                  }
+                  icon={<Ionicons name="person-outline" size={20} color="#cfe3ff" />}
                 />
 
                 <FormInput
@@ -132,22 +131,14 @@ export default function LoginScreen() {
                   secureTextEntry={!showPassword}
                   error={errors.password}
                   rules={{
-                    required: "Password is required",
-                    minLength: { value: 6, message: "At least 6 characters" },
+                    required: 'Password is required',
+                    minLength: { value: 6, message: 'At least 6 characters' },
                   }}
-                  icon={
-                    <Ionicons
-                      name="lock-closed-outline"
-                      size={20}
-                      color="#cfe3ff"
-                    />
-                  }
+                  icon={<Ionicons name="lock-closed-outline" size={20} color="#cfe3ff" />}
                   rightIcon={
-                    <TouchableOpacity
-                      onPress={() => setShowPassword((v) => !v)}
-                    >
+                    <TouchableOpacity onPress={() => setShowPassword((v) => !v)}>
                       <Ionicons
-                        name={showPassword ? "eye-off-outline" : "eye-outline"}
+                        name={showPassword ? 'eye-off-outline' : 'eye-outline'}
                         size={20}
                         color="#cfe3ff"
                       />
@@ -169,17 +160,16 @@ export default function LoginScreen() {
                   )}
                 </TouchableOpacity>
                 <Text style={styles.rememberText}>Remember me</Text>
-                <Pressable style={styles.forgot} onPress={() => {}}>
+                <Pressable
+                  style={styles.forgot}
+                  // onPress={() => toast.success('Saved successfully')}
+                >
                   <Text style={styles.forgotText}>Forgot password?</Text>
                 </Pressable>
               </View>
 
               <GradientButton
-                title={
-                  loginMutation.isPending || isSubmitting
-                    ? "Logging in..."
-                    : "Login"
-                }
+                title={loginMutation.isPending || isSubmitting ? 'Logging in...' : 'Login'}
                 onPress={handleSubmit(onSubmit)}
                 disabled={loginMutation.isPending || isSubmitting}
                 loading={loginMutation.isPending || isSubmitting}
@@ -192,11 +182,7 @@ export default function LoginScreen() {
               </View>
 
               <View style={styles.socialRow}>
-                <SocialButtons
-                  onGoogle={() => {}}
-                  onFacebook={() => {}}
-                  onApple={() => {}}
-                />
+                <SocialButtons onGoogle={() => {}} onFacebook={() => {}} onApple={() => {}} />
               </View>
             </View>
           </ScrollView>
@@ -210,27 +196,27 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   formBg: {
-    width: "100%",
+    width: '100%',
     maxWidth: 420,
-    alignSelf: "center",
+    alignSelf: 'center',
     padding: 18,
-    backgroundColor: "transparent", // no card
+    backgroundColor: 'transparent', // no card
     borderRadius: 12,
     gap: 18,
   },
   logoWrap: {
-    alignItems: "center",
+    alignItems: 'center',
     marginBottom: 8,
   },
   logoCircle: {
     width: 72,
     height: 72,
     borderRadius: 36,
-    backgroundColor: "#e0e7ff",
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: '#e0e7ff',
+    alignItems: 'center',
+    justifyContent: 'center',
     marginBottom: 2,
-    shadowColor: "#4f8cff",
+    shadowColor: '#4f8cff',
     shadowOpacity: 0.12,
     shadowRadius: 8,
     shadowOffset: { width: 0, height: 2 },
@@ -243,74 +229,74 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 30,
-    fontWeight: "800",
-    color: "#fff",
-    textAlign: "center",
+    fontWeight: '800',
+    color: '#fff',
+    textAlign: 'center',
     letterSpacing: 0.6,
   },
   subtitle: {
     fontSize: 15,
-    color: "#cfe3ff",
-    textAlign: "center",
+    color: '#cfe3ff',
+    textAlign: 'center',
     marginBottom: 8,
-    fontWeight: "500",
+    fontWeight: '500',
   },
   inputGroup: {
     gap: 12,
     marginBottom: 2,
   },
   inputIconWrap: {
-    justifyContent: "center",
+    justifyContent: 'center',
   },
   rememberRow: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: 6,
     gap: 8,
   },
   checkbox: {
     width: 24,
     height: 24,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   rememberText: {
-    color: "#cfe3ff",
-    fontWeight: "500",
+    color: '#cfe3ff',
+    fontWeight: '500',
     fontSize: 15,
     marginRight: 8,
   },
   forgot: {
-    marginLeft: "auto",
+    marginLeft: 'auto',
     padding: 4,
   },
   forgotText: {
-    color: "#cfe3ff",
-    fontWeight: "600",
+    color: '#cfe3ff',
+    fontWeight: '600',
     fontSize: 14,
   },
   dividerRow: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 8,
     marginVertical: 18,
-    width: "100%",
+    width: '100%',
   },
   divider: {
     flex: 1,
     height: 1.5,
-    backgroundColor: "rgba(207,227,255,0.18)",
+    backgroundColor: 'rgba(207,227,255,0.18)',
     borderRadius: 1,
   },
   or: {
-    color: "#d7e9ff",
-    fontWeight: "700",
+    color: '#d7e9ff',
+    fontWeight: '700',
     fontSize: 15,
     marginHorizontal: 2,
   },
   socialRow: {
-    flexDirection: "row",
-    justifyContent: "center",
+    flexDirection: 'row',
+    justifyContent: 'center',
     gap: 12,
     marginBottom: 2,
   },

@@ -1,0 +1,13 @@
+node_modules
+.expo
+android
+ios
+.dist
+build
+coverage
+**/*.png
+**/*.jpg
+**/*.jpeg
+**/*.gif
+**/*.svg
+app-example

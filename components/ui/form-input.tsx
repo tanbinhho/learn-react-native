@@ -1,12 +1,6 @@
-import React from "react";
-import { Control, Controller, FieldError } from "react-hook-form";
-import {
-  StyleSheet,
-  Text,
-  TextInput,
-  TextInputProps,
-  View,
-} from "react-native";
+import React from 'react';
+import { Control, Controller, FieldError } from 'react-hook-form';
+import { StyleSheet, Text, TextInput, TextInputProps, View } from 'react-native';
 
 export interface FormInputProps extends TextInputProps {
   name: string;
@@ -66,45 +60,45 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 14,
-    color: "#e6eefc", // Light label for dark gradient background
-    fontWeight: "600",
+    color: '#e6eefc', // Light label for dark gradient background
+    fontWeight: '600',
     marginBottom: 6,
     letterSpacing: 0.2,
   },
   input: {
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.14)",
+    borderColor: 'rgba(255,255,255,0.14)',
     borderRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 14,
     fontSize: 16,
-    backgroundColor: "rgba(255,255,255,0.06)", // subtle translucent field
-    color: "#ffffff", // light text for dark gradient
-    fontWeight: "500",
+    backgroundColor: 'rgba(255,255,255,0.06)', // subtle translucent field
+    color: '#ffffff', // light text for dark gradient
+    fontWeight: '500',
     letterSpacing: 0.1,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOpacity: 0.04,
     shadowRadius: 4,
     shadowOffset: { width: 0, height: 1 },
   },
   inputWrap: {
-    position: "relative",
-    justifyContent: "center",
+    position: 'relative',
+    justifyContent: 'center',
   },
   iconLeft: {
-    position: "absolute",
+    position: 'absolute',
     left: 12,
     top: 0,
     bottom: 0,
-    justifyContent: "center",
+    justifyContent: 'center',
     zIndex: 2,
   },
   iconRight: {
-    position: "absolute",
+    position: 'absolute',
     right: 8,
     top: 0,
     bottom: 0,
-    justifyContent: "center",
+    justifyContent: 'center',
     zIndex: 2,
   },
   inputWithIcon: {
@@ -114,10 +108,10 @@ const styles = StyleSheet.create({
     paddingRight: 44,
   },
   inputError: {
-    borderColor: "#ff5a5f",
+    borderColor: '#ff5a5f',
   },
   error: {
-    color: "#ff5a5f",
+    color: '#ff5a5f',
     fontSize: 13,
     marginTop: 2,
   },

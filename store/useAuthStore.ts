@@ -1,6 +1,6 @@
-import { STORAGE_KEYS } from "@/constants/storageKeys";
-import { secureStorage } from "@/utils/secure-storage";
-import { create } from "zustand";
+import { STORAGE_KEYS } from '@/constants/storageKeys';
+import { secureStorage } from '@/utils/secure-storage';
+import { create } from 'zustand';
 
 type AuthState = {
   accessToken: string | null;
@@ -8,10 +8,7 @@ type AuthState = {
   hydrated: boolean;
 
   hydrate: () => Promise<void>;
-  setTokens: (tokens: {
-    accessToken: string;
-    refreshToken: string;
-  }) => Promise<void>;
+  setTokens: (tokens: { accessToken: string; refreshToken: string }) => Promise<void>;
   clear: () => Promise<void>;
 };
 

@@ -1,6 +1,6 @@
-import { router, useLocalSearchParams, useNavigation } from "expo-router";
-import { useLayoutEffect } from "react";
-import { Button, Text, View } from "react-native";
+import { router, useLocalSearchParams, useNavigation } from 'expo-router';
+import { useLayoutEffect } from 'react';
+import { Button, Text, View } from 'react-native';
 
 export default function PostDetail() {
   const { postId } = useLocalSearchParams<{ postId: string }>();

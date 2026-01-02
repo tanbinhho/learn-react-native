@@ -1,6 +1,6 @@
-import { LinearGradient } from "expo-linear-gradient";
-import React from "react";
-import { ActivityIndicator, Pressable, StyleSheet, Text } from "react-native";
+import { LinearGradient } from 'expo-linear-gradient';
+import React from 'react';
+import { ActivityIndicator, Pressable, StyleSheet, Text } from 'react-native';
 
 export function GradientButton({
   title,
@@ -25,21 +25,17 @@ export function GradientButton({
         (disabled || loading) && styles.disabled,
         pressed && !disabled && !loading && styles.pressed,
       ]}
-      android_ripple={{ color: "#b3c7f7" }}
+      android_ripple={{ color: '#b3c7f7' }}
     >
       <LinearGradient
         colors={
-          disabled ? ["#b3c7f7", "#b3c7f7"] : ["#7b61ff", "#4f8cff"] // vibrant purple -> blue gradient
+          disabled ? ['#b3c7f7', '#b3c7f7'] : ['#7b61ff', '#4f8cff'] // vibrant purple -> blue gradient
         }
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={styles.gradient}
       >
-        {loading ? (
-          <ActivityIndicator color="#fff" />
-        ) : (
-          <Text style={styles.text}>{title}</Text>
-        )}
+        {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.text}>{title}</Text>}
       </LinearGradient>
     </Pressable>
   );
@@ -48,19 +44,19 @@ export function GradientButton({
 const styles = StyleSheet.create({
   button: {
     borderRadius: 10,
-    overflow: "hidden",
+    overflow: 'hidden',
     marginTop: 8,
     elevation: 2,
-    width: "100%",
+    width: '100%',
   },
   gradient: {
     paddingVertical: 14,
-    alignItems: "center",
+    alignItems: 'center',
     borderRadius: 10,
   },
   text: {
-    color: "#fff",
-    fontWeight: "700",
+    color: '#fff',
+    fontWeight: '700',
     fontSize: 17,
     letterSpacing: 0.2,
   },

@@ -1,0 +1,21 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Install Gluestack UI and NativeWind",
+			"type": "shell",
+			"command": "npm install @gluestack-ui/themed @gluestack-ui/react @gluestack-style/react nativewind tailwindcss",
+			"args": [],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "Start Expo Project",
+			"type": "shell",
+			"command": "npm start",
+			"isBackground": false,
+			"group": "build"
+		}
+	]
+}

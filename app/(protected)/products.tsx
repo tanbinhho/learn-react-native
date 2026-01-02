@@ -1,20 +1,13 @@
-import { useQuery } from "@tanstack/react-query";
-import React from "react";
-import {
-  ActivityIndicator,
-  FlatList,
-  Image,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { useQuery } from '@tanstack/react-query';
+import React from 'react';
+import { ActivityIndicator, FlatList, Image, StyleSheet, Text, View } from 'react-native';
 
 function useProducts() {
   return useQuery({
-    queryKey: ["products"],
+    queryKey: ['products'],
     queryFn: async () => {
-      const res = await fetch("https://fakestoreapi.com/products");
-      if (!res.ok) throw new Error("Failed to fetch products");
+      const res = await fetch('https://fakestoreapi.com/products');
+      if (!res.ok) throw new Error('Failed to fetch products');
       return res.json();
     },
   });
@@ -23,13 +16,10 @@ function useProducts() {
 export default function ProductsScreen() {
   const { data, isLoading, error } = useProducts();
 
-  if (isLoading)
-    return (
-      <ActivityIndicator style={{ flex: 1 }} size="large" color="#4f8cff" />
-    );
+  if (isLoading) return <ActivityIndicator style={{ flex: 1 }} size="large" color="#4f8cff" />;
   if (error)
     return (
-      <Text style={{ color: "red", textAlign: "center", marginTop: 40 }}>
+      <Text style={{ color: 'red', textAlign: 'center', marginTop: 40 }}>
         Failed to load products
       </Text>
     );
@@ -60,13 +50,13 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   card: {
-    flexDirection: "row",
-    backgroundColor: "rgba(255,255,255,0.95)",
+    flexDirection: 'row',
+    backgroundColor: 'rgba(255,255,255,0.95)',
     borderRadius: 14,
     padding: 12,
-    alignItems: "center",
+    alignItems: 'center',
     marginBottom: 12,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOpacity: 0.06,
     shadowRadius: 8,
     shadowOffset: { width: 0, height: 2 },
@@ -77,20 +67,20 @@ const styles = StyleSheet.create({
     height: 60,
     borderRadius: 8,
     marginRight: 14,
-    backgroundColor: "#f0f4ff",
+    backgroundColor: '#f0f4ff',
   },
   info: {
     flex: 1,
   },
   title: {
     fontSize: 16,
-    fontWeight: "600",
-    color: "#232526",
+    fontWeight: '600',
+    color: '#232526',
     marginBottom: 4,
   },
   price: {
     fontSize: 15,
-    fontWeight: "700",
-    color: "#4f8cff",
+    fontWeight: '700',
+    color: '#4f8cff',
   },
 });
