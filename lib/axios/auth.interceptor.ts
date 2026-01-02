@@ -1,10 +1,11 @@
-import { clearToken, getToken, setToken } from "@/utils/storage";
+import { STORAGE_KEYS } from "@/constants/storageKeys";
+import { secureStorage } from "@/utils/secure-storage";
 import { AxiosInstance } from "axios";
 import { router } from "expo-router";
 
 export const attachAuthInterceptor = (api: AxiosInstance) => {
   api.interceptors.request.use(async (config) => {
-    const token = await getToken();
+    const token = await secureStorage.get(STORAGE_KEYS.ACCESS_TOKEN);
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -20,17 +21,22 @@ export const attachAuthInterceptor = (api: AxiosInstance) => {
         originalRequest._retry = true;
 
         try {
-          const refreshToken = await getToken("refresh");
+          const refreshToken = await secureStorage.get(
+            STORAGE_KEYS.REFRESH_TOKEN
+          );
           const { data } = await api.post("/auth/refresh", {
             refreshToken,
           });
 
-          await setToken(data.accessToken);
+          await secureStorage.set(STORAGE_KEYS.ACCESS_TOKEN, data.accessToken);
           originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
 
           return api(originalRequest);
         } catch {
-          await clearToken();
+          await Promise.all([
+            secureStorage.remove(STORAGE_KEYS.ACCESS_TOKEN),
+            secureStorage.remove(STORAGE_KEYS.REFRESH_TOKEN),
+          ]);
           router.replace("/login");
         }
       }

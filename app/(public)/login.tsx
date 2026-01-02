@@ -2,7 +2,7 @@ import { FormInput } from "@/components/ui/form-input";
 import { GradientButton } from "@/components/ui/gradient-button";
 import { SocialButtons } from "@/components/ui/social-buttons";
 import { useLogin } from "@/hooks/auth/useLogin";
-import { useAuth } from "@/providers/auth";
+import { useAuthStore } from "@/store/useAuthStore";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useLocalSearchParams } from "expo-router";
@@ -23,7 +23,12 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function LoginScreen() {
-  const { login, isLoggedIn } = useAuth();
+  const { accessToken, hydrated, hydrate } = useAuthStore();
+
+  useEffect(() => {
+    hydrate();
+  }, [hydrate]);
+
   const { redirect } = useLocalSearchParams<{ redirect?: string }>();
   const {
     control,
@@ -32,7 +37,7 @@ export default function LoginScreen() {
     // setValue,
     // watch,
   } = useForm({
-    defaultValues: { username: "", password: "" },
+    defaultValues: { username: "mor_2314", password: "83r5^_" },
     mode: "onTouched",
   });
   const [showPassword, setShowPassword] = useState(false);
@@ -40,8 +45,8 @@ export default function LoginScreen() {
   const fadeAnim = React.useRef(new Animated.Value(0)).current;
 
   const loginMutation = useLogin({
-    onSuccess: (res) => {
-      console.log("Login API response:", res);
+    onSuccess: () => {
+      router.replace((redirect as any) ?? "/");
     },
   });
 
@@ -54,10 +59,10 @@ export default function LoginScreen() {
   }, [fadeAnim]);
 
   useEffect(() => {
-    if (isLoggedIn) {
+    if (hydrated && accessToken) {
       router.replace((redirect as any) ?? "/");
     }
-  }, [isLoggedIn, redirect]);
+  }, [hydrated, accessToken, redirect]);
 
   const onSubmit = async (data: { username: string; password: string }) => {
     try {
@@ -65,8 +70,6 @@ export default function LoginScreen() {
         username: data.username,
         password: data.password,
       });
-      await login();
-      router.replace((redirect as any) ?? "/");
     } catch (err: any) {
       alert(err.message || "Login failed");
     }
@@ -257,22 +260,8 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   inputIconWrap: {
-    // position: "relative",
     justifyContent: "center",
   },
-  // inputIcon: {
-  //   position: "absolute",
-  //   left: 12,
-  //   top: 22,
-  //   zIndex: 2,
-  // },
-  // showHide: {
-  //   position: "absolute",
-  //   right: 8,
-  //   top: 18,
-  //   padding: 8,
-  //   zIndex: 2,
-  // },
   rememberRow: {
     flexDirection: "row",
     alignItems: "center",

@@ -1,14 +1,14 @@
-import { useAuth } from "@/providers/auth";
+import { useAuth } from "@/hooks/auth/useAuth";
 import { Redirect, Slot, usePathname } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ProtectedLayout() {
-  const { isLoggedIn, isLoading } = useAuth();
+  const { isAuthenticated, hydrated } = useAuth();
   const pathname = usePathname();
 
-  if (isLoading) return null;
+  if (!hydrated) return null;
 
-  if (!isLoggedIn) {
+  if (!isAuthenticated) {
     const redirect = pathname || "/";
     return (
       <Redirect href={`/login?redirect=${encodeURIComponent(redirect)}`} />

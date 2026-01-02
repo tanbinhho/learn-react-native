@@ -5,11 +5,11 @@ import { HelloWave } from "@/components/hello-wave";
 import ParallaxScrollView from "@/components/parallax-scroll-view";
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
-import { useAuth } from "@/providers/auth";
+import { useLogout } from "@/hooks/auth/useLogout";
 import { Link, router } from "expo-router";
 
 export default function HomeScreen() {
-  const { logout } = useAuth();
+  const logout = useLogout();
 
   return (
     <ParallaxScrollView
