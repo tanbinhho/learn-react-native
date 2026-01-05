@@ -1,9 +1,11 @@
-import { FormInput } from '@/components/ui/form-input';
+import AppInput from '@/components/common/AppInput';
 import { GradientButton } from '@/components/ui/gradient-button';
 import { SocialButtons } from '@/components/ui/social-buttons';
 import { useLogin } from '@/hooks/auth/useLogin';
+import { useAppToast } from '@/hooks/useAppToast';
 import { useAuthStore } from '@/store/useAuthStore';
 import { Ionicons } from '@expo/vector-icons';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useState } from 'react';
@@ -21,10 +23,18 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import * as yup from 'yup';
+
+const loginSchema = yup
+  .object({
+    username: yup.string().required('Username is required').min(3, 'At least 3 characters'),
+    password: yup.string().required('Password is required').min(6, 'At least 6 characters'),
+  })
+  .required();
 
 export default function LoginScreen() {
   const { accessToken, hydrated, hydrate } = useAuthStore();
-  // const toast = useAppToast();
+  const toast = useAppToast();
 
   useEffect(() => {
     hydrate();
@@ -40,8 +50,8 @@ export default function LoginScreen() {
   } = useForm({
     defaultValues: { username: 'mor_2314', password: '83r5^_' },
     mode: 'onTouched',
+    resolver: yupResolver(loginSchema),
   });
-  const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const fadeAnim = React.useRef(new Animated.Value(0)).current;
 
@@ -106,45 +116,39 @@ export default function LoginScreen() {
               </View>
               <Text style={styles.title}>Welcome back!</Text>
               <Text style={styles.subtitle}>Sign in to continue 🚀</Text>
-
               <View style={styles.inputGroup}>
-                <FormInput
-                  name="username"
-                  control={control}
-                  label="Username"
-                  placeholder="mor_2314"
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  error={errors.username}
-                  rules={{
-                    required: 'Username is required',
-                    minLength: { value: 3, message: 'At least 3 characters' },
-                  }}
-                  icon={<Ionicons name="person-outline" size={20} color="#cfe3ff" />}
-                />
+                <View style={styles.field}>
+                  <Text style={styles.inputLabel}>Username</Text>
+                  <AppInput
+                    name="username"
+                    control={control}
+                    placeholder="mor_2314"
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    error={errors.username}
+                    size="large"
+                    prefix={<Ionicons name="person-outline" size={20} color="#cfe3ff" />}
+                  />
+                </View>
 
-                <FormInput
-                  name="password"
-                  control={control}
-                  label="Password"
-                  placeholder="83r5^_"
-                  secureTextEntry={!showPassword}
-                  error={errors.password}
-                  rules={{
-                    required: 'Password is required',
-                    minLength: { value: 6, message: 'At least 6 characters' },
-                  }}
-                  icon={<Ionicons name="lock-closed-outline" size={20} color="#cfe3ff" />}
-                  rightIcon={
-                    <TouchableOpacity onPress={() => setShowPassword((v) => !v)}>
+                <View style={styles.field}>
+                  <Text style={styles.inputLabel}>Password</Text>
+                  <AppInput.Password
+                    name="password"
+                    control={control}
+                    placeholder="83r5^_"
+                    error={errors.password}
+                    size="large"
+                    prefix={<Ionicons name="lock-closed-outline" size={20} color="#cfe3ff" />}
+                    toggleIcon={(visible) => (
                       <Ionicons
-                        name={showPassword ? 'eye-off-outline' : 'eye-outline'}
+                        name={visible ? 'eye-off-outline' : 'eye-outline'}
                         size={20}
                         color="#cfe3ff"
                       />
-                    </TouchableOpacity>
-                  }
-                />
+                    )}
+                  />
+                </View>
               </View>
 
               <View style={styles.rememberRow}>
@@ -162,7 +166,7 @@ export default function LoginScreen() {
                 <Text style={styles.rememberText}>Remember me</Text>
                 <Pressable
                   style={styles.forgot}
-                  // onPress={() => toast.success('Saved successfully')}
+                  onPress={() => toast.success('Saved successfully')}
                 >
                   <Text style={styles.forgotText}>Forgot password?</Text>
                 </Pressable>
@@ -191,6 +195,7 @@ export default function LoginScreen() {
     </LinearGradient>
   );
 }
+
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
@@ -244,6 +249,15 @@ const styles = StyleSheet.create({
   inputGroup: {
     gap: 12,
     marginBottom: 2,
+  },
+  field: {
+    gap: 6,
+  },
+  inputLabel: {
+    fontSize: 14,
+    color: '#e6eefc',
+    fontWeight: '600',
+    letterSpacing: 0.2,
   },
   inputIconWrap: {
     justifyContent: 'center',

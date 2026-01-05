@@ -13,6 +13,7 @@ import { useAppStore } from '@/store/useAppStore';
 import * as SplashScreen from 'expo-splash-screen';
 import '../global.css';
 // import { gluestackUIConfig } from '../gluestack.config';
+import { ToastProvider } from '@gluestack-ui/toast';
 
 SplashScreen.preventAutoHideAsync();
 export const unstable_settings = {
@@ -43,13 +44,15 @@ export default function RootLayout() {
       >
         <QueryClientProvider client={queryClient}>
           {/* <GluestackUIProvider config={gluestackUIConfig}> */}
-          <Stack>
-            <Stack.Screen name="(protected)" options={{ headerShown: false }} />
-            <Stack.Screen name="(public)/login" options={{ headerShown: false }} />
-            <Stack.Screen name="(public)" options={{ headerShown: false }} />
-            <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-            <Stack.Screen name="+not-found" options={{ title: 'Not found' }} />
-          </Stack>
+          <ToastProvider>
+            <Stack>
+              <Stack.Screen name="(protected)" options={{ headerShown: false }} />
+              <Stack.Screen name="(public)/login" options={{ headerShown: false }} />
+              <Stack.Screen name="(public)" options={{ headerShown: false }} />
+              <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
+              <Stack.Screen name="+not-found" options={{ title: 'Not found' }} />
+            </Stack>
+          </ToastProvider>
           {/* </GluestackUIProvider> */}
         </QueryClientProvider>
         <StatusBar style="auto" />
