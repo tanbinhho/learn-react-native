@@ -4,12 +4,13 @@ import { View, ViewProps } from 'react-native';
 
 type BoxProps = ViewProps & {
   className?: string;
+  contentClassName?: string;
 };
 
-export const AppBox = ({ children, className, style, ...props }: BoxProps) => {
+export const AppBox = ({ children, className, style, contentClassName, ...props }: BoxProps) => {
   return (
     <View
-      className="rounded-lg border border-black/5 bg-white"
+      className={cn('rounded-lg border border-black/5 bg-white', className)}
       style={{
         shadowColor: '#000',
         shadowOpacity: 0.08,
@@ -18,7 +19,7 @@ export const AppBox = ({ children, className, style, ...props }: BoxProps) => {
         elevation: 4,
       }}
     >
-      <View className={cn('rounded-lg p-4', className)} style={style}>
+      <View className={cn('rounded-lg p-4', contentClassName)} style={style}>
         {children}
       </View>
     </View>

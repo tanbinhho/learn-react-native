@@ -1,14 +1,18 @@
 import { TabScreenWrapper } from '@/components/layout/TabScreenWrapper';
-import { GreetingHeader } from '@/components/pages/home/GreetingHeader';
-import { TodayShiftCard } from '@/components/pages/home/TodayShiftCard';
+import GreetingHeader from '@/components/pages/home/GreetingHeader';
+import QuickActions from '@/components/pages/home/QuickActions';
+import TaskToday from '@/components/pages/home/TaskToday';
+import TodayShiftCard from '@/components/pages/home/TodayShiftCard';
 import { ThemedView } from '@/components/themed-view';
 
 export default function HomeScreen() {
   return (
-    <ThemedView style={{ flex: 1 }}>
-      <TabScreenWrapper>
+    <ThemedView className="flex-1">
+      <TabScreenWrapper className="gap-2.5">
         <GreetingHeader />
         <TodayShiftCard />
+        <QuickActions />
+        <TaskToday />
       </TabScreenWrapper>
     </ThemedView>
   );
