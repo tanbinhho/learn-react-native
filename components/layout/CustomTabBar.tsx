@@ -30,13 +30,13 @@ export function CustomTabBar({ state, navigation }: BottomTabBarProps) {
           width: 56,
           height: 56,
           borderRadius: 28,
-          backgroundColor: '#10b981',
+          backgroundColor: '#09c0ba',
           alignItems: 'center',
           justifyContent: 'center',
           elevation: 10,
         }}
       >
-        <Ionicons name="chatbubble" size={26} color="#fff" />
+        <Ionicons name="leaf" size={26} color="#fff" />
       </Pressable>
 
       {/* TAB ITEMS */}
@@ -60,14 +60,14 @@ export function CustomTabBar({ state, navigation }: BottomTabBarProps) {
           label="Schedule"
           icon="calendar"
           focused={state.index === 1}
-          onPress={() => navigation.navigate('explore')}
+          onPress={() => navigation.navigate('schedule')}
         />
         <View style={{ width: 64 }} />
         <Tab
           label="Chat"
           icon="chatbubble"
           focused={state.index === 2}
-          onPress={() => navigation.navigate('feed')}
+          onPress={() => navigation.navigate('chat')}
         />
         <Tab
           label="Profile"
@@ -93,8 +93,8 @@ function Tab({
 }) {
   return (
     <Pressable className="flex-1 items-center justify-center" onPress={onPress}>
-      <Ionicons name={icon} size={16} color={focused ? '#20c997' : '#aaa'} />
-      <Text className={`mt-1 text-[11px] ${focused ? 'text-emerald-500' : 'text-zinc-400'}`}>
+      <Ionicons name={icon} size={16} color={focused ? '#09c0ba' : '#aaa'} />
+      <Text className={`mt-1 text-[11px] ${focused ? 'text-[#09c0ba]' : 'text-zinc-400'}`}>
         {label}
       </Text>
     </Pressable>

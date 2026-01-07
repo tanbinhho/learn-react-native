@@ -11,7 +11,7 @@ export function BottomBarShape({
   width,
   height,
   notchRadius = 32,
-  backgroundColor = '#fff',
+  backgroundColor = '#f6f6f6',
 }: Props) {
   const centerX = width / 2;
   const r = notchRadius;
