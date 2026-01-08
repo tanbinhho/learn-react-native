@@ -16,7 +16,7 @@ export const AppBox = ({ children, className, style, contentClassName, ...props 
         shadowOpacity: 0.08,
         shadowRadius: 10,
         shadowOffset: { width: 0, height: 6 },
-        elevation: 4,
+        elevation: 2,
       }}
     >
       <View className={cn('rounded-lg p-4', contentClassName)} style={style}>

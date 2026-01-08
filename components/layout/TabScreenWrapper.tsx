@@ -9,7 +9,7 @@ export function TabScreenWrapper({
   className?: string;
 }) {
   return (
-    <ScrollView>
+    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ flexGrow: 1 }}>
       <View className={cn('flex-1 px-2.5 pb-20 pt-2.5', className)}>{children}</View>
     </ScrollView>
   );

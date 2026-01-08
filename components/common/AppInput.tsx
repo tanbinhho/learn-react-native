@@ -1,4 +1,5 @@
 import { Input, InputField, InputSlot } from '@/components/ui/input';
+import { Textarea, TextareaInput } from '@/components/ui/textarea';
 import { clsx } from 'clsx';
 import React from 'react';
 import { Controller } from 'react-hook-form';
@@ -44,6 +45,12 @@ const sizeStyles: Record<AppInputSize, { input: string; field: string; slot: str
     field: 'text-sm',
     slot: 'text-sm',
   },
+};
+
+const textareaSizeMap: Record<AppInputSize, 'sm' | 'md' | 'lg'> = {
+  large: 'lg',
+  middle: 'md',
+  small: 'sm',
 };
 
 function BaseAppInput({
@@ -159,11 +166,13 @@ type PasswordInputProps = Omit<AppInputProps, 'suffix' | 'secureTextEntry' | 'pa
 function PasswordAppInput({ toggleIcon, ...props }: PasswordInputProps) {
   const [visible, setVisible] = React.useState(false);
 
-  const iconRenderer = toggleIcon ?? ((isVisible: boolean) => (
-    <Text style={{ color: '#cfe3ff', fontSize: 12, fontWeight: '600' }}>
-      {isVisible ? 'Hide' : 'Show'}
-    </Text>
-  ));
+  const iconRenderer =
+    toggleIcon ??
+    ((isVisible: boolean) => (
+      <Text style={{ color: '#cfe3ff', fontSize: 12, fontWeight: '600' }}>
+        {isVisible ? 'Hide' : 'Show'}
+      </Text>
+    ));
 
   return (
     <BaseAppInput
@@ -178,9 +187,98 @@ function PasswordAppInput({ toggleIcon, ...props }: PasswordInputProps) {
   );
 }
 
-type AppInputComponent = typeof BaseAppInput & { Password: typeof PasswordAppInput };
+type AppTextareaProps = Omit<
+  AppInputProps,
+  'prefix' | 'suffix' | 'passwordToggle' | 'secureTextEntry'
+>;
+
+function TextareaAppInput({
+  name,
+  control,
+  rules,
+  defaultValue = '',
+  error,
+  size = 'middle',
+  className,
+  inputFieldClassName,
+  placeholder = 'Type your message...',
+  ...inputProps
+}: AppTextareaProps) {
+  const errorMessage = typeof error === 'string' ? error : error?.message;
+  const borderClass = errorMessage ? 'border border-red-500' : 'border border-gray-300';
+  const sizeClass = sizeStyles[size] ?? sizeStyles.middle;
+  const textareaClassName = clsx(
+    'rounded-xl bg-[rgba(255,255,255,0.06)] text-white shadow-sm border transition-colors',
+    sizeClass.input,
+    borderClass,
+    className,
+  );
+  const fieldClassName = clsx(
+    'flex-1 text-white placeholder:text-[#cbd6ff] font-medium',
+    sizeClass.field,
+    inputFieldClassName,
+  );
+  const resolvedMultiline = inputProps.multiline ?? true;
+  const textareaSize = textareaSizeMap[size] ?? 'md';
+
+  if (control && name) {
+    return (
+      <>
+        <Controller
+          control={control}
+          name={name}
+          rules={rules}
+          defaultValue={defaultValue}
+          render={({ field: { onChange, onBlur, value, ref } }) => (
+            <Textarea className={textareaClassName} size={textareaSize}>
+              <TextareaInput
+                ref={ref}
+                value={value}
+                onChangeText={onChange}
+                onBlur={onBlur}
+                placeholder={placeholder}
+                multiline={resolvedMultiline}
+                className={fieldClassName}
+                {...inputProps}
+              />
+            </Textarea>
+          )}
+        />
+        {errorMessage ? (
+          <Text style={{ color: '#ef4444', marginTop: 4, marginLeft: 4, fontSize: 13 }}>
+            {errorMessage}
+          </Text>
+        ) : null}
+      </>
+    );
+  }
+
+  return (
+    <>
+      <Textarea className={textareaClassName} size={textareaSize}>
+        <TextareaInput
+          placeholder={placeholder}
+          multiline={resolvedMultiline}
+          className={fieldClassName}
+          {...inputProps}
+        />
+      </Textarea>
+      {errorMessage ? (
+        <Text style={{ color: '#ef4444', marginTop: 4, marginLeft: 4, fontSize: 13 }}>
+          {errorMessage}
+        </Text>
+      ) : null}
+    </>
+  );
+}
+
+type AppInputComponent = typeof BaseAppInput & {
+  Password: typeof PasswordAppInput;
+  Textarea: typeof TextareaAppInput;
+};
 
 const AppInput = BaseAppInput as AppInputComponent;
 AppInput.Password = PasswordAppInput;
+AppInput.Textarea = TextareaAppInput;
 
 export default AppInput;

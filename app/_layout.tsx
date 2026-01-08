@@ -6,14 +6,13 @@ import React from 'react';
 import 'react-native-reanimated';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
+import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAppBootstrap } from '@/hooks/useAppBootstrap';
 import { useAppStore } from '@/store/useAppStore';
-// import { GluestackUIProvider } from '@gluestack-ui/themed';
+import { ToastProvider } from '@gluestack-ui/toast';
 import * as SplashScreen from 'expo-splash-screen';
 import '../global.css';
-// import { gluestackUIConfig } from '../gluestack.config';
-import { ToastProvider } from '@gluestack-ui/toast';
 
 SplashScreen.preventAutoHideAsync();
 export const unstable_settings = {
@@ -43,19 +42,31 @@ export default function RootLayout() {
         }
       >
         <QueryClientProvider client={queryClient}>
-          {/* <GluestackUIProvider config={gluestackUIConfig}> */}
-          <ToastProvider>
-            <Stack>
-              <Stack.Screen name="(protected)" options={{ headerShown: false }} />
-              <Stack.Screen name="(public)/login" options={{ headerShown: false }} />
-              <Stack.Screen name="(public)" options={{ headerShown: false }} />
-              <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-              <Stack.Screen name="+not-found" options={{ title: 'Not found' }} />
-            </Stack>
-          </ToastProvider>
-          {/* </GluestackUIProvider> */}
+          <GluestackUIProvider mode={theme === 'dark' ? 'dark' : 'light'}>
+            <ToastProvider>
+              <Stack>
+                <Stack.Screen name="(protected)" options={{ headerShown: false }} />
+                <Stack.Screen name="(public)/login" options={{ headerShown: false }} />
+                <Stack.Screen name="(public)" options={{ headerShown: false }} />
+                <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
+                <Stack.Screen name="+not-found" options={{ title: 'Not found' }} />
+              </Stack>
+            </ToastProvider>
+          </GluestackUIProvider>
         </QueryClientProvider>
-        <StatusBar style="auto" />
+        <StatusBar
+          style={
+            theme === 'system'
+              ? colorScheme === 'dark'
+                ? 'light'
+                : 'dark'
+              : theme === 'dark'
+                ? 'light'
+                : 'dark'
+          }
+          backgroundColor="transparent"
+          translucent
+        />
       </ThemeProvider>
     </SafeAreaProvider>
   );

@@ -55,7 +55,7 @@ const QuickActions = () => {
     <Grid columns={3} gap={12}>
       {actions.map((item) => (
         <AppBox key={item.id} className="items-center gap-1">
-          <Feather name={item.icon} size={24} color="#09c0ba" />
+          <Feather name={item.icon} size={24} color="#09c0ba" className="m-auto" />
           <Text className="font-semibold">{item.title}</Text>
         </AppBox>
       ))}

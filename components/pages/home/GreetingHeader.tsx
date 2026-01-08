@@ -9,7 +9,7 @@ const GreetingHeader = () => {
       <View className="flex-row items-center gap-2.5">
         <AppAvatar src="https://i.pravatar.cc/300" size="lg" showStatus status="online" />
         <View>
-          <Text>Chào buổi sáng Hồ Tấn Bình</Text>
+          <Text className="text-primary-500">Chào buổi sáng Hồ Tấn Bình</Text>
           <Text>Tuần này bạn đã làm 20 ca rồi!</Text>
         </View>
       </View>
