@@ -1,8 +1,9 @@
 import { AppBox } from '@/components/common/AppBox';
 import { Grid } from '@/components/common/Grid';
+import { useAppToast } from '@/hooks/useAppToast';
 import { Feather } from '@expo/vector-icons';
 import React from 'react';
-import { Text } from 'react-native';
+import { Pressable, Text } from 'react-native';
 
 type TAction = {
   id: number;
@@ -12,6 +13,17 @@ type TAction = {
 };
 
 const QuickActions = () => {
+  const toast = useAppToast();
+
+  const handleActionPress = (action: TAction) => {
+    toast.show({
+      title: 'Thông báo',
+      description: 'Tính năng đang phát triển',
+      variant: 'info',
+      duration: 2000,
+    });
+  };
+
   const actions: TAction[] = [
     {
       id: 1,
@@ -54,10 +66,12 @@ const QuickActions = () => {
   return (
     <Grid columns={3} gap={12}>
       {actions.map((item) => (
-        <AppBox key={item.id} className="items-center gap-1">
-          <Feather name={item.icon} size={24} color="#09c0ba" className="m-auto" />
-          <Text className="font-semibold">{item.title}</Text>
-        </AppBox>
+        <Pressable key={item.id} onPress={() => handleActionPress(item)}>
+          <AppBox className="items-center gap-1">
+            <Feather name={item.icon} size={24} color="#09c0ba" className="m-auto" />
+            <Text className="font-semibold">{item.title}</Text>
+          </AppBox>
+        </Pressable>
       ))}
     </Grid>
   );

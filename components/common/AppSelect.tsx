@@ -182,6 +182,10 @@ function SelectBase({
   size = 'md',
   variant = 'outline',
 }: SelectBaseProps) {
+  // Tìm label tương ứng với value hiện tại
+  const selectedOption = options.find((opt) => opt.value === value);
+  const displayValue = selectedOption ? selectedOption.label : '';
+
   return (
     <Select isDisabled={isDisabled} selectedValue={value} onValueChange={onChange}>
       <SelectTrigger
@@ -189,8 +193,8 @@ function SelectBase({
         variant={variant}
         className={hasError ? 'border-red-500' : undefined}
       >
-        <SelectInput placeholder={placeholder} />
-        <SelectIcon className="mr-3" as={ChevronDownIcon} />
+        <SelectInput placeholder={placeholder} value={displayValue} className="flex-1" />
+        <SelectIcon className="mr-4" as={ChevronDownIcon} />
       </SelectTrigger>
       <SelectPortal>
         <SelectBackdrop />

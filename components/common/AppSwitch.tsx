@@ -138,25 +138,12 @@ function SwitchBase({
   size = 'md',
 }: SwitchBaseProps) {
   return (
-    <View className={`flex-row items-center gap-2 ${className || ''}`}>
-      <Switch
-        value={value}
-        onValueChange={onChange}
-        disabled={isDisabled}
-        size={size}
-        className={hasError ? 'border-red-500' : undefined}
-      />
-      {label && (
-        <Text
-          style={{
-            fontSize: 15,
-            color: hasError ? '#ef4444' : '#000',
-            opacity: isDisabled ? 0.4 : 1,
-          }}
-        >
-          {label}
-        </Text>
-      )}
-    </View>
+    <Switch
+      value={value}
+      onValueChange={onChange}
+      disabled={isDisabled}
+      size={size}
+      className={hasError ? 'border-red-500' : className}
+    />
   );
 }

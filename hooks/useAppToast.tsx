@@ -1,4 +1,5 @@
-import { Toast, ToastDescription, ToastTitle, useToast } from '@/components/ui/toast';
+import { AppToast } from '@/components/common/AppToast';
+import { useToast } from '@/components/ui/toast';
 import * as React from 'react';
 
 type ToastVariant = 'success' | 'error' | 'info' | 'warning' | 'default';
@@ -9,24 +10,6 @@ type ShowToastOptions = {
   duration?: number;
   placement?: 'top' | 'bottom';
   variant?: ToastVariant;
-};
-
-const variantMap: Record<ToastVariant, { action: any; className?: string }> = {
-  success: {
-    action: 'success',
-  },
-  error: {
-    action: 'error',
-  },
-  warning: {
-    action: 'warning',
-  },
-  info: {
-    action: 'muted',
-  },
-  default: {
-    action: 'muted',
-  },
 };
 
 export function useAppToast() {
@@ -53,10 +36,7 @@ export function useAppToast() {
         placement,
         duration,
         render: () => (
-          <Toast nativeID={id} action={variantMap[variant].action}>
-            {title && <ToastTitle>{title}</ToastTitle>}
-            {description && <ToastDescription>{description}</ToastDescription>}
-          </Toast>
+          <AppToast id={id} variant={variant} title={title} description={description} />
         ),
       });
     },
