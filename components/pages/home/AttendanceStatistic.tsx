@@ -2,12 +2,12 @@ import { AppBox } from '@/components/common/AppBox';
 import { ThemedText } from '@/components/themed-text';
 import React from 'react';
 
-const AttendanceHistory = () => {
+const AttendanceStatistic = () => {
   return (
     <AppBox>
-      <ThemedText>Lịch sử chấm công</ThemedText>
+      <ThemedText>Thống kê</ThemedText>
     </AppBox>
   );
 };
 
-export default AttendanceHistory;
+export default AttendanceStatistic;

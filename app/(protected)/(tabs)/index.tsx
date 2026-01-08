@@ -1,5 +1,5 @@
 import { TabScreenWrapper } from '@/components/layout/TabScreenWrapper';
-import AttendanceHistory from '@/components/pages/home/AttendanceHistory';
+import AttendanceStatistic from '@/components/pages/home/AttendanceStatistic';
 import GreetingHeader from '@/components/pages/home/GreetingHeader';
 import QuickActions from '@/components/pages/home/QuickActions';
 import TaskToday from '@/components/pages/home/TaskToday';
@@ -14,7 +14,7 @@ export default function HomeScreen() {
         <TodayShiftCard />
         <QuickActions />
         <TaskToday />
-        <AttendanceHistory />
+        <AttendanceStatistic />
       </TabScreenWrapper>
     </ThemedView>
   );

@@ -170,10 +170,22 @@ module.exports = {
         },
         indicator: {
           primary: '#09c0ba',
-          info: '#09c0ba',
-          error: '#ef4444',
-          success: '#22c55e',
-          warning: '#f59e0b',
+          info: '#3B76DA',
+          error: '#F04438',
+          success: '#12B76A',
+          warning: '#F79009',
+        },
+        textBright: {
+          DEFAULT: '#F5FFFF',
+          gray: '#667085',
+          lightGray: '#6C737F',
+          darkGray: '#344054',
+          mutedGray: '#98A2B3',
+        },
+        textDark: {
+          DEFAULT: '#111927',
+          primary: '#1C4D4D',
+          blue: '#093762',
         },
       },
       fontFamily: {
