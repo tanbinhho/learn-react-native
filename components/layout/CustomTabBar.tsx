@@ -23,7 +23,7 @@ export function CustomTabBar({ state, navigation }: BottomTabBarProps) {
 
       {/* FAB */}
       <Pressable
-        onPress={() => navigation.navigate('search')}
+        onPress={() => navigation.navigate('products')}
         style={{
           position: 'absolute',
           top: -NOTCH_RADIUS,

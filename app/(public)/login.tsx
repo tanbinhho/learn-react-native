@@ -1,5 +1,6 @@
+import { AppButton } from '@/components/common/AppButton';
+import { AppCheckbox } from '@/components/common/AppCheckbox';
 import AppInput from '@/components/common/AppInput';
-import { GradientButton } from '@/components/ui/gradient-button';
 import { SocialButtons } from '@/components/ui/social-buttons';
 import { useLogin } from '@/hooks/auth/useLogin';
 import { useAppToast } from '@/hooks/useAppToast';
@@ -19,7 +20,6 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -88,7 +88,7 @@ export default function LoginScreen() {
 
   return (
     <LinearGradient
-      colors={['#0f172a', '#2b176f', '#274bff']} // deep navy -> indigo -> electric blue
+      colors={['#09c0ba', '#0891b2', '#0e7490']} // primary teal gradient
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
       className="flex-1"
@@ -114,11 +114,11 @@ export default function LoginScreen() {
                   />
                 </View>
               </View>
-              <Text style={styles.title}>Welcome back!</Text>
-              <Text style={styles.subtitle}>Sign in to continue 🚀</Text>
+              <Text style={styles.title}>Chào mừng trở lại!</Text>
+              <Text style={styles.subtitle}>Đăng nhập để tiếp tục 🚀</Text>
               <View style={styles.inputGroup}>
                 <View style={styles.field}>
-                  <Text style={styles.inputLabel}>Username</Text>
+                  <Text style={styles.inputLabel}>Tên đăng nhập</Text>
                   <AppInput
                     name="username"
                     control={control}
@@ -132,7 +132,7 @@ export default function LoginScreen() {
                 </View>
 
                 <View style={styles.field}>
-                  <Text style={styles.inputLabel}>Password</Text>
+                  <Text style={styles.inputLabel}>Mật khẩu</Text>
                   <AppInput.Password
                     name="password"
                     control={control}
@@ -152,36 +152,32 @@ export default function LoginScreen() {
               </View>
 
               <View style={styles.rememberRow}>
-                <TouchableOpacity
-                  style={styles.checkbox}
-                  onPress={() => setRememberMe((v) => !v)}
-                  activeOpacity={0.7}
-                >
-                  {rememberMe ? (
-                    <Ionicons name="checkbox" size={20} color="#4f8cff" />
-                  ) : (
-                    <Ionicons name="square-outline" size={20} color="#b3c7f7" />
-                  )}
-                </TouchableOpacity>
-                <Text style={styles.rememberText}>Remember me</Text>
+                <AppCheckbox
+                  value={rememberMe}
+                  onChange={setRememberMe}
+                  label="Ghi nhớ đăng nhập"
+                />
                 <Pressable
                   style={styles.forgot}
-                  onPress={() => toast.success('Saved successfully')}
+                  onPress={() => toast.info('Tính năng đang phát triển')}
                 >
-                  <Text style={styles.forgotText}>Forgot password?</Text>
+                  <Text style={styles.forgotText}>Quên mật khẩu?</Text>
                 </Pressable>
               </View>
 
-              <GradientButton
-                title={loginMutation.isPending || isSubmitting ? 'Logging in...' : 'Login'}
+              <AppButton
+                title={loginMutation.isPending || isSubmitting ? 'Đang đăng nhập...' : 'Đăng nhập'}
                 onPress={handleSubmit(onSubmit)}
                 disabled={loginMutation.isPending || isSubmitting}
                 loading={loginMutation.isPending || isSubmitting}
+                size="lg"
+                fullWidth
+                suffix={<Ionicons name="arrow-forward" size={20} color="#ffffff" />}
               />
 
               <View style={styles.dividerRow}>
                 <View style={styles.divider} />
-                <Text style={styles.or}>or</Text>
+                <Text style={styles.or}>hoặc</Text>
                 <View style={styles.divider} />
               </View>
 
@@ -217,12 +213,12 @@ const styles = StyleSheet.create({
     width: 72,
     height: 72,
     borderRadius: 36,
-    backgroundColor: '#e0e7ff',
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 2,
-    shadowColor: '#4f8cff',
-    shadowOpacity: 0.12,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
     shadowRadius: 8,
     shadowOffset: { width: 0, height: 2 },
     elevation: 3,

@@ -1,5 +1,27 @@
+import { cn } from '@/utils/cn';
+import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
-import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Image, Pressable, View } from 'react-native';
+
+type SocialButtonProps = {
+  onPress?: () => void;
+  icon: React.ReactNode;
+  className?: string;
+};
+
+function SocialButton({ onPress, icon, className }: SocialButtonProps) {
+  return (
+    <Pressable
+      onPress={onPress}
+      className={cn(
+        'h-14 w-14 items-center justify-center rounded-full border shadow-lg active:scale-95 active:opacity-80',
+        className,
+      )}
+    >
+      {icon}
+    </Pressable>
+  );
+}
 
 export function SocialButtons({
   onGoogle,
@@ -11,57 +33,30 @@ export function SocialButtons({
   onApple?: () => void;
 }) {
   return (
-    <View style={styles.row}>
-      <Pressable
-        style={[
-          styles.btn,
-          {
-            backgroundColor: 'rgba(255,255,255,0.92)',
-            borderColor: 'rgba(0,0,0,0.06)',
-          },
-        ]}
+    <View className="mt-2 flex-row justify-center gap-4">
+      <SocialButton
         onPress={onGoogle}
-      >
-        <Image
-          source={{
-            uri: 'https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg',
-          }}
-          style={styles.icon}
-        />
-      </Pressable>
-      <Pressable style={[styles.btn, { backgroundColor: '#1877f3' }]} onPress={onFacebook}>
-        <Text style={[styles.iconText, { color: '#fff', fontWeight: '800' }]}>f</Text>
-      </Pressable>
-      <Pressable style={[styles.btn, { backgroundColor: '#000' }]} onPress={onApple}>
-        <Text style={[styles.iconText, { color: '#fff' }]}></Text>
-      </Pressable>
+        className="border-gray-200 bg-white"
+        icon={
+          <Image
+            source={{
+              uri: 'https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg',
+            }}
+            className="h-7 w-7"
+            resizeMode="contain"
+          />
+        }
+      />
+      <SocialButton
+        onPress={onFacebook}
+        className="border-[#1877f3] bg-[#1877f3]"
+        icon={<Ionicons name="logo-facebook" size={28} color="#ffffff" />}
+      />
+      <SocialButton
+        onPress={onApple}
+        className="border-black bg-black"
+        icon={<Ionicons name="logo-apple" size={32} color="#ffffff" />}
+      />
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    gap: 16,
-    marginTop: 8,
-  },
-  btn: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 1,
-    elevation: 2,
-  },
-  icon: {
-    width: 28,
-    height: 28,
-    resizeMode: 'contain',
-  },
-  iconText: {
-    fontSize: 28,
-    fontWeight: '600',
-  },
-});
