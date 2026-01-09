@@ -1,5 +1,5 @@
 import { cn } from '@/utils/cn'; // helper merge class
-import { Pressable } from 'react-native';
+import { Pressable, Text } from 'react-native';
 
 const tagBase = 'flex-row items-center justify-center border';
 
@@ -22,29 +22,39 @@ const tagTextSize = {
 
 const tagColor = {
   default: {
-    solid: 'bg-gray-100 border-gray-200 text-gray-700',
-    outline: 'bg-transparent border-gray-300 text-gray-700',
+    solid: 'bg-background-100 border-outline-300 text-typography-700',
+    outline: 'bg-transparent border-outline-400 text-typography-700',
   },
   primary: {
-    solid: 'bg-indigo-50 border-indigo-200 text-indigo-700',
-    outline: 'bg-transparent border-indigo-300 text-indigo-700',
+    solid: 'bg-primary-50 border-primary-200 text-primary-700',
+    outline: 'bg-transparent border-primary-400',
   },
   success: {
-    solid: 'bg-emerald-50 border-emerald-200 text-emerald-700',
-    outline: 'bg-transparent border-emerald-300 text-emerald-700',
+    solid: 'bg-success-50 border-success-200 text-success-700',
+    outline: 'bg-transparent border-success-400',
   },
   info: {
-    solid: 'bg-sky-50 border-sky-200 text-sky-700',
-    outline: 'bg-transparent border-sky-300 text-sky-700',
+    solid: 'bg-info-50 border-info-200 text-info-700',
+    outline: 'bg-transparent border-info-400',
   },
   warning: {
-    solid: 'bg-amber-50 border-amber-200 text-amber-700',
-    outline: 'bg-transparent border-amber-300 text-amber-700',
+    solid: 'bg-warning-50 border-warning-200 text-warning-700',
+    outline: 'bg-transparent border-warning-400',
   },
   error: {
-    solid: 'bg-red-50 border-red-200 text-red-700',
-    outline: 'bg-transparent border-red-300 text-red-700',
+    solid: 'bg-error-50 border-error-200 text-error-700',
+    outline: 'bg-transparent border-error-400',
   },
+};
+
+// Text colors using indicator colors for outline variants
+const tagTextColor = {
+  default: 'text-typography-700',
+  primary: 'text-[#09c0ba]', // indicator.primary
+  success: 'text-[#12B76A]', // indicator.success
+  info: 'text-[#3B76DA]', // indicator.info
+  warning: 'text-[#F79009]', // indicator.warning
+  error: 'text-[#F04438]', // indicator.error
 };
 
 interface TagProps {
@@ -84,7 +94,11 @@ export const Tag = ({
         className,
       )}
     >
-      <Text className={cn('font-medium', tagTextSize[size])}>{children}</Text>
+      <Text
+        className={cn('font-medium', tagTextSize[size], outline ? tagTextColor[color] : undefined)}
+      >
+        {children}
+      </Text>
     </Pressable>
   );
 };
