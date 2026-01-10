@@ -1,8 +1,10 @@
 import { AppBox } from '@/components/common/AppBox';
+import { AppButton } from '@/components/common/AppButton';
 import { AppCheckbox } from '@/components/common/AppCheckbox';
+import { AppText } from '@/components/common/AppText';
 import FlexRow from '@/components/common/FlexRow';
-import { ThemedText } from '@/components/themed-text';
-import { Feather } from '@expo/vector-icons';
+import { INDICATOR_COLOR } from '@/constants/theme';
+import { Pin, Plus } from 'lucide-react-native';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { View } from 'react-native';
@@ -19,12 +21,21 @@ const TaskToday = () => {
   });
 
   return (
-    <AppBox className="bg-yellow-50">
+    <AppBox className="gap-1 bg-yellow-50">
       <FlexRow>
-        <View className="flex-row items-center gap-2.5">
-          <Feather name="check-square" size={16} color="green" />
-          <ThemedText>Nhiệm vụ hôm nay</ThemedText>
+        <View className="flex-row items-center gap-1">
+          <Pin size={16} color={INDICATOR_COLOR.primary} />
+          <AppText.Title>Nhiệm vụ hôm nay</AppText.Title>
         </View>
+
+        <AppButton
+          size="sm"
+          variant="ghost"
+          prefix={<Plus size={14} color={INDICATOR_COLOR.info} />}
+          title="Thêm nhiệm vụ"
+          classNameText="text-info-500"
+          className="gap-1"
+        />
       </FlexRow>
 
       <AppCheckbox.Group
@@ -35,6 +46,7 @@ const TaskToday = () => {
           { label: 'Nhiệm vụ 2', value: 'task2' },
           { label: 'Nhiệm vụ 3', value: 'task3' },
         ]}
+        className="gap-2"
       />
 
       {/* 

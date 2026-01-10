@@ -15,8 +15,7 @@ type TextColor =
   | 'success'
   | 'warning'
   | 'error'
-  | 'info'
-  | 'danger';
+  | 'info';
 type TextWeight = 'normal' | 'medium' | 'semibold' | 'bold';
 type TextAlign = 'left' | 'center' | 'right';
 
@@ -34,22 +33,21 @@ export interface AppTextProps extends TextProps {
 
 const variantMap: Record<TextVariant, string> = {
   title: 'text-xl leading-7',
-  body: 'text-base leading-6',
+  body: 'text-sm leading-5',
   caption: 'text-xs leading-4',
-  label: 'text-sm leading-5',
+  label: 'text-base leading-6',
   error: 'text-sm leading-5',
 };
 
 const colorMap: Record<TextColor, string> = {
-  default: 'text-typography-900 dark:text-typography-50',
+  default: 'text-textDark dark:text-typography-50',
   muted: 'text-typography-500 dark:text-typography-400',
-  primary: 'text-[#09c0ba]', // indicator.primary
+  primary: 'text-indicator-primary',
   secondary: 'text-secondary-600 dark:text-secondary-400',
-  success: 'text-[#12B76A]', // indicator.success
-  warning: 'text-[#F79009]', // indicator.warning
-  error: 'text-[#F04438]', // indicator.error
-  info: 'text-[#3B76DA]', // indicator.info
-  danger: 'text-[#F04438]', // indicator.error (alias)
+  success: 'text-indicator-success',
+  warning: 'text-indicator-warning',
+  error: 'text-indicator-error',
+  info: 'text-indicator-info',
 };
 
 const weightMap: Record<TextWeight, string> = {
@@ -98,15 +96,13 @@ function BaseText({
    Preset Components
 ======================= */
 
-type PresetProps = Omit<AppTextProps, 'variant'>;
+const Title = (props: AppTextProps) => <BaseText variant="title" weight="bold" {...props} />;
 
-const Title = (props: PresetProps) => <BaseText variant="title" weight="bold" {...props} />;
+const Caption = (props: AppTextProps) => <BaseText variant="caption" color="muted" {...props} />;
 
-const Caption = (props: PresetProps) => <BaseText variant="caption" color="muted" {...props} />;
+const Label = (props: AppTextProps) => <BaseText variant="label" weight="medium" {...props} />;
 
-const Label = (props: PresetProps) => <BaseText variant="label" weight="medium" {...props} />;
-
-const ErrorText = (props: PresetProps) => <BaseText variant="error" color="danger" {...props} />;
+const Error = (props: AppTextProps) => <BaseText variant="error" color="error" {...props} />;
 
 /* =======================
    Export Compound Component
@@ -116,5 +112,5 @@ export const AppText = Object.assign(BaseText, {
   Title,
   Caption,
   Label,
-  Error: ErrorText,
+  Error,
 });

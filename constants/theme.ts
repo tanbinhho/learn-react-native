@@ -3,6 +3,7 @@
  * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
  */
 
+import { IndicatorColor } from '@/types/color.type';
 import { Platform } from 'react-native';
 
 // Primary colors - matching NativeWind theme
@@ -54,3 +55,12 @@ export const Fonts = Platform.select({
     mono: "SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
   },
 });
+
+export const INDICATOR_COLOR: Record<IndicatorColor, string> = {
+  primary: '#09c0ba',
+  default: '#111927',
+  error: '#F04438',
+  info: '#3B76DA',
+  success: '#12B76A',
+  warning: '#F79009',
+};

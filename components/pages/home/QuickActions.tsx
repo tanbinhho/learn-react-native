@@ -1,14 +1,24 @@
 import { AppBox } from '@/components/common/AppBox';
+import { AppText } from '@/components/common/AppText';
 import { Grid } from '@/components/common/Grid';
+import { INDICATOR_COLOR } from '@/constants/theme';
 import { useAppToast } from '@/hooks/useAppToast';
-import { Feather } from '@expo/vector-icons';
+import {
+  CalendarDays,
+  ChartColumnBig,
+  ChartNoAxesCombined,
+  CircleDollarSign,
+  LucideIcon,
+  Rocket,
+  Store,
+} from 'lucide-react-native';
 import React from 'react';
-import { Pressable, Text } from 'react-native';
+import { Pressable } from 'react-native';
 
 type TAction = {
   id: number;
   title: string;
-  icon: keyof typeof Feather.glyphMap;
+  icon: LucideIcon;
   link?: string;
 };
 
@@ -27,37 +37,37 @@ const QuickActions = () => {
   const actions: TAction[] = [
     {
       id: 1,
-      icon: 'dollar-sign',
+      icon: CircleDollarSign,
       title: 'Lương',
       link: 'salary',
     },
     {
       id: 2,
-      icon: 'trending-up',
+      icon: ChartNoAxesCombined,
       title: 'KPI',
       link: 'kpi',
     },
     {
       id: 3,
-      icon: 'calendar',
+      icon: CalendarDays,
       title: 'Đặt lịch',
       link: '',
     },
     {
       id: 4,
-      icon: 'pie-chart',
+      icon: ChartColumnBig,
       title: 'Báo cáo',
       link: 'report',
     },
     {
       id: 5,
-      icon: 'pie-chart',
+      icon: Rocket,
       title: 'Cải tiến',
       link: 'report',
     },
     {
       id: 6,
-      icon: 'home',
+      icon: Store,
       title: 'Nhập hàng',
       link: 'home',
     },
@@ -65,14 +75,18 @@ const QuickActions = () => {
 
   return (
     <Grid columns={3} gap={12}>
-      {actions.map((item) => (
-        <Pressable key={item.id} onPress={() => handleActionPress(item)}>
-          <AppBox className="items-center gap-1">
-            <Feather name={item.icon} size={24} color="#09c0ba" className="m-auto" />
-            <Text className="font-semibold">{item.title}</Text>
-          </AppBox>
-        </Pressable>
-      ))}
+      {actions.map((item) => {
+        const Icon = item.icon;
+
+        return (
+          <Pressable key={item.id} onPress={() => handleActionPress(item)}>
+            <AppBox contentClassName="items-center gap-1">
+              <Icon size={26} color={INDICATOR_COLOR.primary} className="w-max" />
+              <AppText weight="semibold">{item.title}</AppText>
+            </AppBox>
+          </Pressable>
+        );
+      })}
     </Grid>
   );
 };

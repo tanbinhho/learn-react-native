@@ -16,6 +16,7 @@ export type AppButtonProps = {
   suffix?: React.ReactNode;
   fullWidth?: boolean;
   className?: string;
+  classNameText?: string;
   children?: React.ReactNode;
 };
 
@@ -70,6 +71,7 @@ export function AppButton({
   fullWidth = false,
   className,
   children,
+  classNameText,
 }: AppButtonProps) {
   const [pressed, setPressed] = React.useState(false);
 
@@ -89,12 +91,13 @@ export function AppButton({
       onPressOut={() => setPressed(false)}
       disabled={isDisabled}
       className={cn(
-        'flex-row items-center justify-center gap-2 rounded-xl border shadow-sm',
+        'flex-row items-center justify-center gap-2 rounded-xl border bg-transparent',
         sizeConfig.container,
         variantStyles[variant],
         pressed && !isDisabled && variantPressedStyles[variant],
         isDisabled && 'opacity-50',
         fullWidth && 'w-full',
+        variant !== 'ghost' && 'shadow-sm',
         className,
       )}
     >
@@ -115,6 +118,7 @@ export function AppButton({
                   ? variantPressedTextStyles[variant]
                   : variantTextStyles[variant],
                 isDisabled && 'opacity-70',
+                classNameText,
               )}
             >
               {children || title}

@@ -8,7 +8,11 @@ interface FlexRowProps {
 }
 
 const FlexRow = ({ children, className }: FlexRowProps) => {
-  return <View className={cn('item-center flex-row justify-between', className)}>{children}</View>;
+  return (
+    <View className={cn('item-center flex-row items-center justify-between', className)}>
+      {children}
+    </View>
+  );
 };
 
 export default FlexRow;
