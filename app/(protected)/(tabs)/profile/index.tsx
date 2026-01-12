@@ -180,8 +180,8 @@ export default function ProfileTab() {
             onPress={handleLogout}
             title="Đăng xuất"
             prefix={<Feather name="log-out" size={20} color="#ffffff" />}
-            fullWidth
             className="mb-8"
+            block
           />
         </View>
       </TabScreenWrapper>

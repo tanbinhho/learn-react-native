@@ -1,88 +1,187 @@
+import { INDICATOR_COLOR } from '@/constants/theme';
 import { cn } from '@/utils/cn';
 import React from 'react';
-import { ActivityIndicator, Pressable, Text } from 'react-native';
+import { ActivityIndicator, Pressable, Text, TextStyle, ViewStyle } from 'react-native';
 
-type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
+type ButtonColor =
+  | 'default'
+  | 'primary'
+  | 'info'
+  | 'success'
+  | 'warning'
+  | 'error'
+  | 'danger'
+  | (string & {});
 type ButtonSize = 'sm' | 'md' | 'lg' | 'xl';
+type ButtonShape = 'default' | 'round' | 'circle';
 
 export type AppButtonProps = {
   title?: string;
   onPress?: () => void;
-  variant?: ButtonVariant;
+  variant?: 'default' | 'outlined' | 'dashed' | 'solid' | 'filled' | 'text' | 'link' | 'danger';
   size?: ButtonSize;
+  shape?: ButtonShape;
+  block?: boolean;
   disabled?: boolean;
   loading?: boolean;
+  icon?: React.ReactNode;
+  iconPlacement?: 'start' | 'end';
   prefix?: React.ReactNode;
   suffix?: React.ReactNode;
-  fullWidth?: boolean;
+  color?: ButtonColor; // custom brand color override or token
   className?: string;
   classNameText?: string;
   children?: React.ReactNode;
 };
 
-const variantStyles: Record<ButtonVariant, string> = {
-  primary: 'bg-primary-500 border-primary-500',
-  secondary: 'bg-secondary-500 border-secondary-500',
-  outline: 'bg-white border-2 border-primary-500',
-  ghost: 'bg-transparent border-transparent',
-  danger: 'bg-error-500 border-error-500',
+const variantStyles: Record<
+  NonNullable<AppButtonProps['variant']>,
+  { container: string; text: string; pressed: string; textPressed: string }
+> = {
+  default: {
+    container: 'bg-background-50 border border-outline-300',
+    text: 'text-typography-800',
+    pressed: 'bg-background-100',
+    textPressed: 'text-typography-900',
+  },
+  outlined: {
+    container: 'bg-white border border-outline-400',
+    text: 'text-typography-800',
+    pressed: 'bg-background-50',
+    textPressed: 'text-typography-900',
+  },
+  dashed: {
+    container: 'bg-white border border-dashed border-outline-300',
+    text: 'text-typography-800',
+    pressed: 'bg-background-50',
+    textPressed: 'text-typography-900',
+  },
+  solid: {
+    container: 'bg-typography-700 border-typography-700',
+    text: 'text-white',
+    pressed: 'bg-typography-800',
+    textPressed: 'text-white',
+  },
+  filled: {
+    container: 'bg-primary-500 border-primary-500',
+    text: 'text-white',
+    pressed: 'bg-primary-600',
+    textPressed: 'text-white',
+  },
+  text: {
+    container: 'bg-transparent border-transparent',
+    text: 'text-typography-800',
+    pressed: 'bg-background-50',
+    textPressed: 'text-typography-900',
+  },
+  link: {
+    container: 'bg-transparent border-transparent',
+    text: 'text-primary-500',
+    pressed: 'bg-transparent',
+    textPressed: 'text-primary-600',
+  },
+  danger: {
+    container: 'bg-error-500 border-error-500',
+    text: 'text-white',
+    pressed: 'bg-error-600',
+    textPressed: 'text-white',
+  },
 };
 
-const variantPressedStyles: Record<ButtonVariant, string> = {
-  primary: 'bg-primary-600',
-  secondary: 'bg-secondary-600',
-  outline: 'bg-primary-500 border-primary-500',
-  ghost: 'bg-background-100',
-  danger: 'bg-error-600',
+const sizeStyles: Record<ButtonSize, { container: string; text: string }> = {
+  sm: { container: 'h-9 px-3 text-sm', text: 'text-sm' },
+  md: { container: 'h-11 px-4 text-base', text: 'text-base' },
+  lg: { container: 'h-12 px-5 text-base', text: 'text-base' },
+  xl: { container: 'h-14 px-6 text-lg', text: 'text-lg' },
 };
 
-const variantTextStyles: Record<ButtonVariant, string> = {
-  primary: 'text-white',
-  secondary: 'text-white',
-  outline: 'text-primary-500',
-  ghost: 'text-typography-700',
-  danger: 'text-white',
-};
-
-const variantPressedTextStyles: Record<ButtonVariant, string> = {
-  primary: 'text-white',
-  secondary: 'text-white',
-  outline: 'text-white',
-  ghost: 'text-typography-700',
-  danger: 'text-white',
-};
-
-const sizeStyles: Record<ButtonSize, { container: string; text: string; icon: number }> = {
-  sm: { container: 'h-9 px-3', text: 'text-sm', icon: 16 },
-  md: { container: 'h-11 px-5', text: 'text-base', icon: 18 },
-  lg: { container: 'h-12 px-6', text: 'text-base', icon: 20 },
-  xl: { container: 'h-14 px-8', text: 'text-lg', icon: 22 },
+const shapeStyles: Record<ButtonShape, string> = {
+  default: 'rounded-xl',
+  round: 'rounded-full',
+  circle: 'rounded-full aspect-square px-0',
 };
 
 export function AppButton({
   title,
   onPress,
-  variant = 'primary',
+  variant = 'outlined',
   size = 'md',
+  shape = 'default',
+  block = false,
   disabled = false,
   loading = false,
-  prefix,
-  suffix,
-  fullWidth = false,
+  icon,
+  iconPlacement = 'start',
+  color,
   className,
   children,
   classNameText,
 }: AppButtonProps) {
   const [pressed, setPressed] = React.useState(false);
 
+  const resolvedVariant = variant ?? 'outlined';
   const isDisabled = disabled || loading;
   const sizeConfig = sizeStyles[size];
+  const tone = variantStyles[resolvedVariant] ?? variantStyles.default;
+
+  const customColorStyle: ViewStyle = {};
+  const customTextColorStyle: TextStyle = {};
+
+  const resolveColorValue = (value?: ButtonColor): string | undefined => {
+    if (!value || value === 'default') return undefined;
+    if (value === 'primary') return INDICATOR_COLOR.primary;
+    if (value === 'info') return INDICATOR_COLOR.info;
+    if (value === 'success') return INDICATOR_COLOR.success;
+    if (value === 'warning') return INDICATOR_COLOR.warning;
+    if (value === 'error' || value === 'danger') return INDICATOR_COLOR.error;
+    return value;
+  };
+
+  const colorValue = resolveColorValue(color);
+
+  if (colorValue) {
+    const isGhosty = resolvedVariant === 'text' || resolvedVariant === 'link';
+    const isOutlined = resolvedVariant === 'outlined' || resolvedVariant === 'dashed';
+
+    if (isGhosty) {
+      customTextColorStyle.color = colorValue;
+    } else if (isOutlined) {
+      customColorStyle.borderColor = colorValue;
+      customTextColorStyle.color = colorValue;
+      customColorStyle.backgroundColor = 'transparent';
+    } else {
+      customColorStyle.backgroundColor = colorValue;
+      customColorStyle.borderColor = colorValue;
+      customTextColorStyle.color = '#ffffff';
+    }
+  }
 
   const handlePress = () => {
     if (!isDisabled && onPress) {
       onPress();
     }
   };
+
+  const content = (
+    <>
+      {iconPlacement === 'start' && icon}
+      {(title || children) && (
+        <Text
+          className={cn(
+            'font-semibold',
+            sizeConfig.text,
+            pressed && !isDisabled ? tone.textPressed : tone.text,
+            isDisabled && 'opacity-70',
+            classNameText,
+          )}
+          style={customTextColorStyle}
+        >
+          {children || title}
+        </Text>
+      )}
+      {iconPlacement === 'end' && icon}
+    </>
+  );
 
   return (
     <Pressable
@@ -91,41 +190,34 @@ export function AppButton({
       onPressOut={() => setPressed(false)}
       disabled={isDisabled}
       className={cn(
-        'flex-row items-center justify-center gap-2 rounded-xl border bg-transparent',
+        'flex-row items-center justify-center gap-2 border bg-transparent',
         sizeConfig.container,
-        variantStyles[variant],
-        pressed && !isDisabled && variantPressedStyles[variant],
-        isDisabled && 'opacity-50',
-        fullWidth && 'w-full',
-        variant !== 'ghost' && 'shadow-sm',
+        shapeStyles[shape],
+        tone.container,
+        pressed && !isDisabled && tone.pressed,
+        isDisabled && 'opacity-60',
+        block && 'w-full',
         className,
       )}
+      style={customColorStyle}
     >
       {loading ? (
         <ActivityIndicator
           size="small"
-          color={variant === 'outline' || variant === 'ghost' ? '#09c0ba' : '#ffffff'}
+          color={
+            colorValue
+              ? colorValue
+              : resolvedVariant === 'text' ||
+                  resolvedVariant === 'link' ||
+                  resolvedVariant === 'outlined' ||
+                  resolvedVariant === 'dashed' ||
+                  resolvedVariant === 'default'
+                ? '#4B5563'
+                : '#ffffff'
+          }
         />
       ) : (
-        <>
-          {prefix}
-          {(title || children) && (
-            <Text
-              className={cn(
-                'font-semibold',
-                sizeConfig.text,
-                pressed && !isDisabled
-                  ? variantPressedTextStyles[variant]
-                  : variantTextStyles[variant],
-                isDisabled && 'opacity-70',
-                classNameText,
-              )}
-            >
-              {children || title}
-            </Text>
-          )}
-          {suffix}
-        </>
+        content
       )}
     </Pressable>
   );

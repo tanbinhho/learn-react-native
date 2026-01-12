@@ -30,7 +30,7 @@ const TaskToday = () => {
 
         <AppButton
           size="sm"
-          variant="ghost"
+          variant="text"
           prefix={<Plus size={14} color={INDICATOR_COLOR.info} />}
           title="Thêm nhiệm vụ"
           classNameText="text-info-500"

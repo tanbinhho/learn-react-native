@@ -171,7 +171,7 @@ export default function LoginScreen() {
                 disabled={loginMutation.isPending || isSubmitting}
                 loading={loginMutation.isPending || isSubmitting}
                 size="lg"
-                fullWidth
+                block
                 suffix={<Ionicons name="arrow-forward" size={20} color="#ffffff" />}
               />
 
