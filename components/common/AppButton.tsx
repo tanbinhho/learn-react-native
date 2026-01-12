@@ -196,7 +196,7 @@ export function AppButton({
         tone.container,
         pressed && !isDisabled && tone.pressed,
         isDisabled && 'opacity-60',
-        block && 'w-full',
+        block && 'flex-1',
         className,
       )}
       style={customColorStyle}

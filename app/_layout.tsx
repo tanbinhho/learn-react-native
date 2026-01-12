@@ -12,6 +12,7 @@ import { useAppBootstrap } from '@/hooks/useAppBootstrap';
 import { useAppStore } from '@/store/useAppStore';
 import { ToastProvider } from '@gluestack-ui/toast';
 import * as SplashScreen from 'expo-splash-screen';
+import ConfirmHost from '@/components/common/ConfirmHost';
 import '../global.css';
 
 SplashScreen.preventAutoHideAsync();
@@ -44,6 +45,7 @@ export default function RootLayout() {
         <QueryClientProvider client={queryClient}>
           <GluestackUIProvider mode={theme === 'dark' ? 'dark' : 'light'}>
             <ToastProvider>
+              <ConfirmHost />
               <Stack>
                 <Stack.Screen name="(protected)" options={{ headerShown: false }} />
                 <Stack.Screen name="(public)/login" options={{ headerShown: false }} />

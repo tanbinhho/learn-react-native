@@ -29,6 +29,7 @@ type AppModalProps = {
   cancelButtonProps?: AppButtonProps;
   confirmButtonProps?: AppButtonProps;
   footer?: React.ReactNode;
+  closable?: boolean;
   className?: string;
   contentClassName?: string;
   bodyClassName?: string;
@@ -49,6 +50,7 @@ function AppModal({
   cancelButtonProps,
   confirmButtonProps,
   footer,
+  closable = true,
   className,
   contentClassName,
   bodyClassName,
@@ -91,7 +93,7 @@ function AppModal({
         exit={defaultContentAnimation.exit}
         transition={defaultContentAnimation.transition}
       >
-        {(title || description) && (
+        {(title || description || closable) && (
           <ModalHeader className="items-center gap-3">
             <View className="flex-1">
               {title ? (
@@ -101,9 +103,11 @@ function AppModal({
                 <Text className="mt-1 text-sm text-typography-600">{description}</Text>
               ) : null}
             </View>
-            <ModalCloseButton onPress={onClose}>
-              <X />
-            </ModalCloseButton>
+            {closable ? (
+              <ModalCloseButton onPress={onClose}>
+                <X />
+              </ModalCloseButton>
+            ) : null}
           </ModalHeader>
         )}
 
