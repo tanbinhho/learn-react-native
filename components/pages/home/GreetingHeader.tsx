@@ -1,4 +1,5 @@
 import { AppAvatar } from '@/components/common/AppAvatar';
+import AppBadge from '@/components/common/AppBadge';
 import { AppText } from '@/components/common/AppText';
 import { Bell } from 'lucide-react-native';
 import React from 'react';
@@ -14,7 +15,9 @@ const GreetingHeader = () => {
           <AppText>Tuần này bạn đã làm 20 ca rồi!</AppText>
         </View>
       </View>
-      <Bell size={24} color="#09c0ba" />
+      <AppBadge dot color="red">
+        <Bell size={24} color="#09c0ba" />
+      </AppBadge>
     </View>
   );
 };

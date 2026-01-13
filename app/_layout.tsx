@@ -3,16 +3,15 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import 'react-native-reanimated';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
+import ConfirmHost from '@/components/common/ConfirmHost';
 import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAppBootstrap } from '@/hooks/useAppBootstrap';
 import { useAppStore } from '@/store/useAppStore';
 import { ToastProvider } from '@gluestack-ui/toast';
 import * as SplashScreen from 'expo-splash-screen';
-import ConfirmHost from '@/components/common/ConfirmHost';
 import '../global.css';
 
 SplashScreen.preventAutoHideAsync();

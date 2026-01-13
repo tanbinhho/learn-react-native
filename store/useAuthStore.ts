@@ -18,16 +18,21 @@ export const useAuthStore = create<AuthState>((set) => ({
   hydrated: false,
 
   hydrate: async () => {
-    const [accessToken, refreshToken] = await Promise.all([
-      secureStorage.get(STORAGE_KEYS.ACCESS_TOKEN),
-      secureStorage.get(STORAGE_KEYS.REFRESH_TOKEN),
-    ]);
+    try {
+      const [accessToken, refreshToken] = await Promise.all([
+        secureStorage.get(STORAGE_KEYS.ACCESS_TOKEN),
+        secureStorage.get(STORAGE_KEYS.REFRESH_TOKEN),
+      ]);
 
-    set({
-      accessToken,
-      refreshToken,
-      hydrated: true,
-    });
+      set({
+        accessToken,
+        refreshToken,
+        hydrated: true,
+      });
+    } catch (error) {
+      // On secure storage failure, still allow app to boot
+      set({ hydrated: true });
+    }
   },
 
   setTokens: async ({ accessToken, refreshToken }) => {
