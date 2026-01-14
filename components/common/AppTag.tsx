@@ -20,67 +20,128 @@ const tagTextSize = {
   lg: 'text-base',
 };
 
-const tagColor = {
+type TagColor = 'default' | 'primary' | 'success' | 'info' | 'warning' | 'error';
+
+type TagVariant = 'filled' | 'outlined' | 'solid';
+
+type VariantStyles = {
+  container: string;
+  text: string;
+};
+
+const tagStyles: Record<TagColor, Record<TagVariant, VariantStyles>> = {
   default: {
-    solid: 'bg-background-100 border-outline-300 text-typography-700',
-    outline: 'bg-transparent border-outline-400 text-typography-700',
+    filled: {
+      container: 'bg-background-100 border-outline-300',
+      text: 'text-typography-700',
+    },
+    outlined: {
+      container: 'bg-background-0 border-outline-300',
+      text: 'text-typography-700',
+    },
+    solid: {
+      container: 'bg-typography-900 border-typography-900',
+      text: 'text-white',
+    },
   },
   primary: {
-    solid: 'bg-primary-50 border-primary-200 text-primary-700',
-    outline: 'bg-transparent border-primary-400',
+    filled: {
+      container: 'bg-primary-50 border-primary-200',
+      text: 'text-primary-700',
+    },
+    outlined: {
+      container: 'bg-primary-0 border-primary-300',
+      text: 'text-primary-700',
+    },
+    solid: {
+      container: 'bg-primary-500 border-primary-500',
+      text: 'text-white',
+    },
   },
   success: {
-    solid: 'bg-success-50 border-success-200 text-success-700',
-    outline: 'bg-transparent border-success-400',
+    filled: {
+      container: 'bg-success-50 border-success-200',
+      text: 'text-success-700',
+    },
+    outlined: {
+      container: 'bg-success-0 border-success-300',
+      text: 'text-success-700',
+    },
+    solid: {
+      container: 'bg-success-500 border-success-500',
+      text: 'text-white',
+    },
   },
   info: {
-    solid: 'bg-info-50 border-info-200 text-info-700',
-    outline: 'bg-transparent border-info-400',
+    filled: {
+      container: 'bg-info-50 border-info-200',
+      text: 'text-info-700',
+    },
+    outlined: {
+      container: 'bg-info-0 border-info-300',
+      text: 'text-[#3B76DA]',
+    },
+    solid: {
+      container: 'bg-info-500 border-info-500',
+      text: 'text-white',
+    },
   },
   warning: {
-    solid: 'bg-warning-50 border-warning-200 text-warning-700',
-    outline: 'bg-transparent border-warning-400',
+    filled: {
+      container: 'bg-warning-50 border-warning-200',
+      text: 'text-warning-700',
+    },
+    outlined: {
+      container: 'bg-warning-0 border-warning-300',
+      text: 'text-[#F79009]',
+    },
+    solid: {
+      container: 'bg-warning-500 border-warning-500',
+      text: 'text-white',
+    },
   },
   error: {
-    solid: 'bg-error-50 border-error-200 text-error-700',
-    outline: 'bg-transparent border-error-400',
+    filled: {
+      container: 'bg-error-50 border-error-200',
+      text: 'text-error-700',
+    },
+    outlined: {
+      container: 'bg-error-0 border-error-300',
+      text: 'text-[#F04438]',
+    },
+    solid: {
+      container: 'bg-error-500 border-error-500',
+      text: 'text-white',
+    },
   },
 };
 
-// Text colors using indicator colors for outline variants
-const tagTextColor = {
-  default: 'text-typography-700',
-  primary: 'text-[#09c0ba]', // indicator.primary
-  success: 'text-[#12B76A]', // indicator.success
-  info: 'text-[#3B76DA]', // indicator.info
-  warning: 'text-[#F79009]', // indicator.warning
-  error: 'text-[#F04438]', // indicator.error
-};
-
-interface TagProps {
+interface AppTagProps {
   children: React.ReactNode;
 
   size?: 'sm' | 'md' | 'lg';
-  color?: 'default' | 'primary' | 'success' | 'info' | 'warning' | 'error';
+  color?: TagColor;
   shape?: 'rounded' | 'pill';
 
-  outline?: boolean;
+  variant?: TagVariant;
   disabled?: boolean;
 
   onPress?: () => void;
   className?: string;
 }
 
-export const Tag = ({
+export const AppTag = ({
   children,
   size = 'md',
   color = 'default',
   shape = 'rounded',
-  outline = false,
+  variant = 'filled',
   disabled = false,
   onPress,
   className,
-}: TagProps) => {
+}: AppTagProps) => {
+  const variantStyle = tagStyles[color][variant];
+
   return (
     <Pressable
       disabled={disabled || !onPress}
@@ -89,16 +150,12 @@ export const Tag = ({
         tagBase,
         tagSize[size],
         tagShape[shape],
-        tagColor[color][outline ? 'outline' : 'solid'],
+        variantStyle.container,
         disabled && 'opacity-50',
         className,
       )}
     >
-      <Text
-        className={cn('font-medium', tagTextSize[size], outline ? tagTextColor[color] : undefined)}
-      >
-        {children}
-      </Text>
+      <Text className={cn('font-medium', tagTextSize[size], variantStyle.text)}>{children}</Text>
     </Pressable>
   );
 };

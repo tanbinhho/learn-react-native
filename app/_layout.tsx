@@ -2,10 +2,9 @@ import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import React from 'react';
+import React, { Suspense } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import ConfirmHost from '@/components/common/ConfirmHost';
 import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAppBootstrap } from '@/hooks/useAppBootstrap';
@@ -20,6 +19,7 @@ export const unstable_settings = {
 };
 
 const queryClient = new QueryClient();
+const ConfirmHost = React.lazy(() => import('@/components/common/ConfirmHost'));
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -44,7 +44,9 @@ export default function RootLayout() {
         <QueryClientProvider client={queryClient}>
           <GluestackUIProvider mode={theme === 'dark' ? 'dark' : 'light'}>
             <ToastProvider>
-              <ConfirmHost />
+              <Suspense fallback={null}>
+                <ConfirmHost />
+              </Suspense>
               <Stack>
                 <Stack.Screen name="(protected)" options={{ headerShown: false }} />
                 <Stack.Screen name="(public)/login" options={{ headerShown: false }} />

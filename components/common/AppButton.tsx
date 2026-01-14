@@ -13,12 +13,12 @@ type ButtonColor =
   | 'danger'
   | (string & {});
 type ButtonSize = 'sm' | 'md' | 'lg' | 'xl';
-type ButtonShape = 'default' | 'round' | 'circle';
+type ButtonShape = 'default' | 'round';
 
 export type AppButtonProps = {
   title?: string;
   onPress?: () => void;
-  variant?: 'default' | 'outlined' | 'dashed' | 'solid' | 'filled' | 'text' | 'link' | 'danger';
+  variant?: 'outlined' | 'dashed' | 'filled' | 'text';
   size?: ButtonSize;
   shape?: ButtonShape;
   block?: boolean;
@@ -38,12 +38,6 @@ const variantStyles: Record<
   NonNullable<AppButtonProps['variant']>,
   { container: string; text: string; pressed: string; textPressed: string }
 > = {
-  default: {
-    container: 'bg-background-50 border border-outline-300',
-    text: 'text-typography-800',
-    pressed: 'bg-background-100',
-    textPressed: 'text-typography-900',
-  },
   outlined: {
     container: 'bg-white border border-outline-400',
     text: 'text-typography-800',
@@ -55,12 +49,6 @@ const variantStyles: Record<
     text: 'text-typography-800',
     pressed: 'bg-background-50',
     textPressed: 'text-typography-900',
-  },
-  solid: {
-    container: 'bg-typography-700 border-typography-700',
-    text: 'text-white',
-    pressed: 'bg-typography-800',
-    textPressed: 'text-white',
   },
   filled: {
     container: 'bg-primary-500 border-primary-500',
@@ -74,18 +62,6 @@ const variantStyles: Record<
     pressed: 'bg-background-50',
     textPressed: 'text-typography-900',
   },
-  link: {
-    container: 'bg-transparent border-transparent',
-    text: 'text-primary-500',
-    pressed: 'bg-transparent',
-    textPressed: 'text-primary-600',
-  },
-  danger: {
-    container: 'bg-error-500 border-error-500',
-    text: 'text-white',
-    pressed: 'bg-error-600',
-    textPressed: 'text-white',
-  },
 };
 
 const sizeStyles: Record<ButtonSize, { container: string; text: string }> = {
@@ -98,7 +74,6 @@ const sizeStyles: Record<ButtonSize, { container: string; text: string }> = {
 const shapeStyles: Record<ButtonShape, string> = {
   default: 'rounded-xl',
   round: 'rounded-full',
-  circle: 'rounded-full aspect-square px-0',
 };
 
 export function AppButton({
@@ -122,7 +97,7 @@ export function AppButton({
   const resolvedVariant = variant ?? 'outlined';
   const isDisabled = disabled || loading;
   const sizeConfig = sizeStyles[size];
-  const tone = variantStyles[resolvedVariant] ?? variantStyles.default;
+  const tone = variantStyles[resolvedVariant];
 
   const customColorStyle: ViewStyle = {};
   const customTextColorStyle: TextStyle = {};
@@ -140,7 +115,7 @@ export function AppButton({
   const colorValue = resolveColorValue(color);
 
   if (colorValue) {
-    const isGhosty = resolvedVariant === 'text' || resolvedVariant === 'link';
+    const isGhosty = resolvedVariant === 'text';
     const isOutlined = resolvedVariant === 'outlined' || resolvedVariant === 'dashed';
 
     if (isGhosty) {
@@ -208,10 +183,8 @@ export function AppButton({
             colorValue
               ? colorValue
               : resolvedVariant === 'text' ||
-                  resolvedVariant === 'link' ||
                   resolvedVariant === 'outlined' ||
-                  resolvedVariant === 'dashed' ||
-                  resolvedVariant === 'default'
+                  resolvedVariant === 'dashed'
                 ? '#4B5563'
                 : '#ffffff'
           }
