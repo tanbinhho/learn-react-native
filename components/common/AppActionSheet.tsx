@@ -79,6 +79,7 @@ export const AppActionSheet = ({
               'text-base font-medium text-typography-900',
               action.destructive && 'text-error-600',
             )}
+            numberOfLines={2}
           >
             {action.label}
           </ActionsheetItemText>
