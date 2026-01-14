@@ -2,7 +2,8 @@ import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import React, { Suspense } from 'react';
+import React, { Suspense, useMemo } from 'react';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
@@ -26,51 +27,42 @@ export default function RootLayout() {
   const ready = useAppBootstrap();
   const theme = useAppStore((s) => s.theme);
 
+  const resolvedTheme = useMemo(() => {
+    if (theme === 'system') {
+      return colorScheme ?? 'light';
+    }
+    return theme;
+  }, [colorScheme, theme]);
+
+  const navigationTheme = resolvedTheme === 'dark' ? DarkTheme : DefaultTheme;
+  const providerMode = resolvedTheme === 'dark' ? 'dark' : 'light';
+  const statusBarStyle = providerMode === 'dark' ? 'light' : 'dark';
+
   if (!ready) return null;
 
   return (
-    <SafeAreaProvider>
-      <ThemeProvider
-        value={
-          theme === 'system'
-            ? colorScheme === 'dark'
-              ? DarkTheme
-              : DefaultTheme
-            : theme === 'dark'
-              ? DarkTheme
-              : DefaultTheme
-        }
-      >
-        <QueryClientProvider client={queryClient}>
-          <GluestackUIProvider mode={theme === 'dark' ? 'dark' : 'light'}>
-            <ToastProvider>
-              <Suspense fallback={null}>
-                <ConfirmHost />
-              </Suspense>
-              <Stack>
-                <Stack.Screen name="(protected)" options={{ headerShown: false }} />
-                <Stack.Screen name="(public)/login" options={{ headerShown: false }} />
-                <Stack.Screen name="(public)" options={{ headerShown: false }} />
-                <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-                <Stack.Screen name="+not-found" options={{ title: 'Not found' }} />
-              </Stack>
-            </ToastProvider>
-          </GluestackUIProvider>
-        </QueryClientProvider>
-        <StatusBar
-          style={
-            theme === 'system'
-              ? colorScheme === 'dark'
-                ? 'light'
-                : 'dark'
-              : theme === 'dark'
-                ? 'light'
-                : 'dark'
-          }
-          backgroundColor="transparent"
-          translucent
-        />
-      </ThemeProvider>
-    </SafeAreaProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaProvider>
+        <ThemeProvider value={navigationTheme}>
+          <QueryClientProvider client={queryClient}>
+            <GluestackUIProvider mode={providerMode}>
+              <ToastProvider>
+                <Suspense fallback={null}>
+                  <ConfirmHost />
+                </Suspense>
+                <Stack>
+                  <Stack.Screen name="(protected)" options={{ headerShown: false }} />
+                  <Stack.Screen name="(public)/login" options={{ headerShown: false }} />
+                  <Stack.Screen name="(public)" options={{ headerShown: false }} />
+                  <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
+                  <Stack.Screen name="+not-found" options={{ title: 'Not found' }} />
+                </Stack>
+              </ToastProvider>
+            </GluestackUIProvider>
+          </QueryClientProvider>
+          <StatusBar style={statusBarStyle} backgroundColor="transparent" translucent />
+        </ThemeProvider>
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
   );
 }

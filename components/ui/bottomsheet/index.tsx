@@ -1,26 +1,19 @@
+import { FocusScope } from '@gluestack-ui/utils/aria';
 import GorhomBottomSheet, {
-  BottomSheetBackdrop as GorhomBottomSheetBackdrop,
-  BottomSheetView as GorhomBottomSheetView,
   BottomSheetHandle,
+  BottomSheetBackdrop as GorhomBottomSheetBackdrop,
+  BottomSheetFlatList as GorhomBottomSheetFlatList,
   BottomSheetTextInput as GorhomBottomSheetInput,
   BottomSheetScrollView as GorhomBottomSheetScrollView,
-  BottomSheetFlatList as GorhomBottomSheetFlatList,
   BottomSheetSectionList as GorhomBottomSheetSectionList,
+  BottomSheetView as GorhomBottomSheetView,
 } from '@gorhom/bottom-sheet';
-import { Platform } from 'react-native';
+import React, { createContext, useCallback, useContext, useMemo, useRef, useState } from 'react';
 import type { PressableProps, TextProps } from 'react-native';
-import { FocusScope } from '@gluestack-ui/utils/aria';
-import React, {
-  createContext,
-  useCallback,
-  useContext,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
-import { Pressable, Text } from 'react-native';
-import { cssInterop } from 'nativewind';
+import { Platform, Pressable, Text } from 'react-native';
+
 import { tva } from '@gluestack-ui/utils/nativewind-utils';
+import { cssInterop } from 'nativewind';
 
 const bottomSheetBackdropStyle = tva({
   base: 'absolute inset-0 flex-1 touch-none select-none bg-black opacity-0',
@@ -52,6 +45,8 @@ const BottomSheetContext = createContext<{
   handleClose: () => {},
   handleOpen: () => {},
 });
+
+export const useBottomSheetContext = () => useContext(BottomSheetContext);
 
 type IBottomSheetProps = React.ComponentProps<typeof GorhomBottomSheet>;
 export const BottomSheet = ({
@@ -113,7 +108,7 @@ export const BottomSheetPortal = ({
         handleClose();
       }
     },
-    [handleClose]
+    [handleClose],
   );
 
   return (
@@ -152,9 +147,7 @@ export const BottomSheetTrigger = ({
     </Pressable>
   );
 };
-type IBottomSheetBackdrop = React.ComponentProps<
-  typeof GorhomBottomSheetBackdrop
->;
+type IBottomSheetBackdrop = React.ComponentProps<typeof GorhomBottomSheetBackdrop>;
 
 export const BottomSheetBackdrop = ({
   disappearsOnIndex = -1,

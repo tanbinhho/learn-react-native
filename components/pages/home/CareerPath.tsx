@@ -12,7 +12,6 @@ import { Text, View } from 'react-native';
 
 const CareerPath = () => {
   const [open, setOpen] = React.useState(false);
-  const [saving, setSaving] = React.useState(false);
 
   const handleSave = () => {
     // Handle save action
