@@ -58,13 +58,13 @@ export function CustomTabBar({ state, navigation }: BottomTabBarProps) {
         }}
       >
         <Tab
-          label="Home"
+          label="Trang chủ"
           icon={Home}
           focused={state.index === 0}
           onPress={() => navigation.navigate('index')}
         />
         <Tab
-          label="Schedule"
+          label="Lịch ca"
           icon={CalendarDays}
           focused={state.index === 1}
           onPress={() => navigation.navigate('schedule')}
@@ -77,7 +77,7 @@ export function CustomTabBar({ state, navigation }: BottomTabBarProps) {
           onPress={() => navigation.navigate('chat')}
         />
         <Tab
-          label="Profile"
+          label="Hồ sơ"
           icon={CircleUserRound}
           focused={state.index === 3}
           onPress={() => navigation.navigate('profile')}
@@ -101,7 +101,7 @@ function Tab({
   const Icon = icon;
   return (
     <Pressable className="flex-1 items-center justify-center" onPress={onPress}>
-      <Icon size={24} color={focused ? '#09c0ba' : '#aaa'} />
+      <Icon size={18} color={focused ? '#09c0ba' : '#aaa'} />
       <Text className={`mt-1 text-[11px] ${focused ? 'text-[#09c0ba]' : 'text-zinc-400'}`}>
         {label}
       </Text>

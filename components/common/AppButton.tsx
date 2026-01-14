@@ -87,7 +87,7 @@ export function AppButton({
   loading = false,
   icon,
   iconPlacement = 'start',
-  color,
+  color = 'default',
   className,
   children,
   classNameText,
