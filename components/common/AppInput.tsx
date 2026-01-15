@@ -2,7 +2,6 @@ import { Input, InputField, InputSlot } from '@/components/ui/input';
 import { Textarea, TextareaInput } from '@/components/ui/textarea';
 import { clsx } from 'clsx';
 import React from 'react';
-import { Controller } from 'react-hook-form';
 import { Text, TextInputProps, TouchableOpacity } from 'react-native';
 
 /**
@@ -11,11 +10,13 @@ import { Text, TextInputProps, TouchableOpacity } from 'react-native';
  */
 type AppInputSize = 'large' | 'middle' | 'small';
 
-type AppInputProps = TextInputProps & {
-  name?: string;
-  control?: any;
-  rules?: any;
-  defaultValue?: any;
+type AppInputProps = Omit<
+  TextInputProps,
+  'onChange' | 'onChangeText' | 'value' | 'defaultValue' | 'onBlur'
+> & {
+  value?: string;
+  onChangeText?: (text: string) => void;
+  onBlur?: () => void;
   error?: { message?: string } | string;
   prefix?: React.ReactNode;
   suffix?: React.ReactNode;
@@ -31,17 +32,17 @@ type AppInputProps = TextInputProps & {
 
 const sizeStyles: Record<AppInputSize, { input: string; field: string; slot: string }> = {
   large: {
-    input: 'min-h-[56px] px-5 text-base',
+    input: 'min-h-[56px] px-4 text-base',
     field: 'text-base',
     slot: 'text-base',
   },
   middle: {
-    input: 'min-h-[48px] px-4 text-[15px]',
-    field: 'text-[15px]',
-    slot: 'text-[15px]',
+    input: 'min-h-[48px] px-2 text-sm',
+    field: 'text-sm',
+    slot: 'text-sm',
   },
   small: {
-    input: 'min-h-[40px] px-3 text-sm',
+    input: 'min-h-[40px] px-2 text-sm',
     field: 'text-sm',
     slot: 'text-sm',
   },
@@ -54,10 +55,9 @@ const textareaSizeMap: Record<AppInputSize, 'sm' | 'md' | 'lg'> = {
 };
 
 function BaseAppInput({
-  name,
-  control,
-  rules,
-  defaultValue = '',
+  value,
+  onChangeText,
+  onBlur,
   error,
   prefix,
   suffix,
@@ -69,21 +69,21 @@ function BaseAppInput({
   passwordToggle,
   ...inputProps
 }: AppInputProps) {
-  const errorMessage = typeof error === 'string' ? error : error?.message;
-  const borderClass = errorMessage ? 'border border-red-500' : 'border border-gray-300';
+  const hasError = !!(typeof error === 'string' ? error : error?.message);
+  const borderClass = hasError ? 'border border-red-500' : 'border border-gray-300';
   const sizeClass = sizeStyles[size] ?? sizeStyles.middle;
   const inputClassName = clsx(
-    'rounded-xl bg-[rgba(255,255,255,0.06)] text-white shadow-sm flex-row items-center gap-2 border transition-colors',
+    'rounded-xl bg-white text-gray-900 shadow-sm flex-row items-center gap-2 border transition-colors',
     sizeClass.input,
     borderClass,
     className,
   );
   const fieldClassName = clsx(
-    'flex-1 text-white placeholder:text-[#cbd6ff] font-medium',
+    'flex-1 text-gray-900 placeholder:text-gray-400 font-medium',
     sizeClass.field,
     inputFieldClassName,
   );
-  const slotClassName = clsx('opacity-90 text-white', sizeClass.slot);
+  const slotClassName = clsx('opacity-90 text-gray-500', sizeClass.slot);
   const resolvedSecureEntry = passwordToggle ? !passwordToggle.isVisible : secureTextEntry;
   const resolvedSuffix =
     suffix ??
@@ -99,63 +99,22 @@ function BaseAppInput({
       </TouchableOpacity>
     ) : null);
 
-  // Controlled (react-hook-form)
-  if (control && name) {
-    return (
-      <>
-        <Controller
-          control={control}
-          name={name}
-          rules={rules}
-          defaultValue={defaultValue}
-          render={({ field: { onChange, onBlur, value, ref } }) => (
-            <Input className={inputClassName}>
-              {prefix && <InputSlot className={clsx('pl-3', slotClassName)}>{prefix}</InputSlot>}
-              <InputField
-                ref={ref}
-                value={value}
-                onChangeText={onChange}
-                onBlur={onBlur}
-                placeholder={placeholder}
-                secureTextEntry={resolvedSecureEntry}
-                className={fieldClassName}
-                {...inputProps}
-              />
-              {resolvedSuffix && (
-                <InputSlot className={clsx('pr-3', slotClassName)}>{resolvedSuffix}</InputSlot>
-              )}
-            </Input>
-          )}
-        />
-        {errorMessage ? (
-          <Text style={{ color: '#ef4444', marginTop: 4, marginLeft: 4, fontSize: 13 }}>
-            {errorMessage}
-          </Text>
-        ) : null}
-      </>
-    );
-  }
-  // Uncontrolled
   return (
-    <>
-      <Input className={inputClassName}>
-        {prefix && <InputSlot className={clsx('pl-3', slotClassName)}>{prefix}</InputSlot>}
-        <InputField
-          className={fieldClassName}
-          placeholder={placeholder}
-          secureTextEntry={resolvedSecureEntry}
-          {...inputProps}
-        />
-        {resolvedSuffix && (
-          <InputSlot className={clsx('pr-3', slotClassName)}>{resolvedSuffix}</InputSlot>
-        )}
-      </Input>
-      {errorMessage ? (
-        <Text style={{ color: '#ef4444', marginTop: 4, marginLeft: 4, fontSize: 13 }}>
-          {errorMessage}
-        </Text>
-      ) : null}
-    </>
+    <Input className={inputClassName}>
+      {prefix && <InputSlot className={clsx('pl-3', slotClassName)}>{prefix}</InputSlot>}
+      <InputField
+        value={value}
+        onChangeText={onChangeText}
+        onBlur={onBlur}
+        placeholder={placeholder}
+        secureTextEntry={resolvedSecureEntry}
+        className={fieldClassName}
+        {...inputProps}
+      />
+      {resolvedSuffix && (
+        <InputSlot className={clsx('pr-3', slotClassName)}>{resolvedSuffix}</InputSlot>
+      )}
+    </Input>
   );
 }
 
@@ -165,7 +124,6 @@ type PasswordInputProps = Omit<AppInputProps, 'suffix' | 'secureTextEntry' | 'pa
 
 function PasswordAppInput({ toggleIcon, ...props }: PasswordInputProps) {
   const [visible, setVisible] = React.useState(false);
-
   const iconRenderer =
     toggleIcon ??
     ((isVisible: boolean) => (
@@ -173,7 +131,6 @@ function PasswordAppInput({ toggleIcon, ...props }: PasswordInputProps) {
         {isVisible ? 'Hide' : 'Show'}
       </Text>
     ));
-
   return (
     <BaseAppInput
       {...props}
@@ -193,10 +150,9 @@ type AppTextareaProps = Omit<
 >;
 
 function TextareaAppInput({
-  name,
-  control,
-  rules,
-  defaultValue = '',
+  value,
+  onChangeText,
+  onBlur,
   error,
   size = 'middle',
   className,
@@ -204,71 +160,34 @@ function TextareaAppInput({
   placeholder = 'Type your message...',
   ...inputProps
 }: AppTextareaProps) {
-  const errorMessage = typeof error === 'string' ? error : error?.message;
-  const borderClass = errorMessage ? 'border border-red-500' : 'border border-gray-300';
+  const hasError = !!(typeof error === 'string' ? error : error?.message);
+  const borderClass = hasError ? 'border border-red-500' : 'border border-gray-300';
   const sizeClass = sizeStyles[size] ?? sizeStyles.middle;
   const textareaClassName = clsx(
-    'rounded-xl bg-[rgba(255,255,255,0.06)] text-white shadow-sm border transition-colors',
+    'rounded-xl bg-white text-gray-900 shadow-sm border transition-colors',
     sizeClass.input,
     borderClass,
     className,
   );
   const fieldClassName = clsx(
-    'flex-1 text-white placeholder:text-[#cbd6ff] font-medium',
+    'flex-1 text-gray-900 placeholder:text-gray-400 font-medium',
     sizeClass.field,
     inputFieldClassName,
   );
   const resolvedMultiline = inputProps.multiline ?? true;
   const textareaSize = textareaSizeMap[size] ?? 'md';
-
-  if (control && name) {
-    return (
-      <>
-        <Controller
-          control={control}
-          name={name}
-          rules={rules}
-          defaultValue={defaultValue}
-          render={({ field: { onChange, onBlur, value, ref } }) => (
-            <Textarea className={textareaClassName} size={textareaSize}>
-              <TextareaInput
-                ref={ref}
-                value={value}
-                onChangeText={onChange}
-                onBlur={onBlur}
-                placeholder={placeholder}
-                multiline={resolvedMultiline}
-                className={fieldClassName}
-                {...inputProps}
-              />
-            </Textarea>
-          )}
-        />
-        {errorMessage ? (
-          <Text style={{ color: '#ef4444', marginTop: 4, marginLeft: 4, fontSize: 13 }}>
-            {errorMessage}
-          </Text>
-        ) : null}
-      </>
-    );
-  }
-
   return (
-    <>
-      <Textarea className={textareaClassName} size={textareaSize}>
-        <TextareaInput
-          placeholder={placeholder}
-          multiline={resolvedMultiline}
-          className={fieldClassName}
-          {...inputProps}
-        />
-      </Textarea>
-      {errorMessage ? (
-        <Text style={{ color: '#ef4444', marginTop: 4, marginLeft: 4, fontSize: 13 }}>
-          {errorMessage}
-        </Text>
-      ) : null}
-    </>
+    <Textarea className={textareaClassName} size={textareaSize}>
+      <TextareaInput
+        value={value}
+        onChangeText={onChangeText}
+        onBlur={onBlur}
+        placeholder={placeholder}
+        multiline={resolvedMultiline}
+        className={fieldClassName}
+        {...inputProps}
+      />
+    </Textarea>
   );
 }
 

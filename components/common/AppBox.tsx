@@ -73,26 +73,31 @@ export const AppBox = ({ children, className, contentClassName, style, ...props 
   );
 };
 
-export const AppBoxColor = ({
-  children,
-  className,
-  color = 'default',
-  icon,
-  ...props
-}: AppBoxColorProps) => {
-  return (
-    <View className={cn('flex-1 rounded-xl p-3', BOX_COLOR_MAP[color], className)} {...props}>
-      {icon && (
-        <View
-          className={cn(
-            'h-10 w-10 items-center justify-center rounded-full',
-            BOX_ICON_COLOR_MAP[color],
-          )}
-        >
-          {icon}
-        </View>
-      )}
-      {children}
-    </View>
-  );
-};
+type AppBoxVariantProps = Omit<AppBoxColorProps, 'color'>;
+
+function createBoxVariant(color: AppBoxColor) {
+  return function BoxVariant({ children, className, icon, ...props }: AppBoxVariantProps) {
+    return (
+      <View className={cn('rounded-xl p-3', BOX_COLOR_MAP[color], className)} {...props}>
+        {icon && (
+          <View
+            className={cn(
+              'h-10 w-10 items-center justify-center rounded-full',
+              BOX_ICON_COLOR_MAP[color],
+            )}
+          >
+            {icon}
+          </View>
+        )}
+        {children}
+      </View>
+    );
+  };
+}
+
+AppBox.Primary = createBoxVariant('primary');
+AppBox.Success = createBoxVariant('success');
+AppBox.Warning = createBoxVariant('warning');
+AppBox.Error = createBoxVariant('error');
+AppBox.Info = createBoxVariant('info');
+AppBox.Default = createBoxVariant('default');

@@ -1,6 +1,5 @@
 import { AppBox } from '@/components/common/AppBox';
 import { AppButton } from '@/components/common/AppButton';
-import { AppCheckbox } from '@/components/common/AppCheckbox';
 import { AppText } from '@/components/common/AppText';
 import FlexRow from '@/components/common/FlexRow';
 import { INDICATOR_COLOR } from '@/constants/theme';
@@ -38,7 +37,7 @@ const TaskToday = () => {
         />
       </FlexRow>
 
-      <AppCheckbox.Group
+      {/* <AppCheckbox.Group
         name="tasks"
         control={control}
         options={[
@@ -47,7 +46,7 @@ const TaskToday = () => {
           { label: 'Nhiệm vụ 3', value: 'task3' },
         ]}
         className="gap-2"
-      />
+      /> */}
 
       {/* 
       <AppRadio.Group

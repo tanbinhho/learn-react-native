@@ -1,174 +1,114 @@
-import React from 'react';
-import { Control, Controller, RegisterOptions } from 'react-hook-form';
-import { Text, View } from 'react-native';
+import React, { createContext, useContext } from 'react';
 import { Checkbox, CheckboxIcon, CheckboxIndicator, CheckboxLabel } from '../ui/checkbox';
 import { CheckIcon } from '../ui/icon';
 
-/* -------------------- Single Checkbox Types -------------------- */
-
-type BaseCheckboxProps = {
+export type AppCheckboxProps = {
+  value?: boolean | string[];
+  onChange?: (value: boolean | string[]) => void;
+  checkboxValue?: string;
   label?: string;
   isDisabled?: boolean;
   className?: string;
   error?: string | { message?: string };
-  indicatorClassName?: string; // Custom checkbox indicator styling
+  indicatorClassName?: string;
 };
 
-/** Controlled Checkbox (React Hook Form) */
-type ControlledCheckboxProps = BaseCheckboxProps & {
-  name: string;
-  control: Control<any>;
-  rules?: RegisterOptions;
-  value?: never;
-  onChange?: never;
-};
-
-/** Uncontrolled Checkbox (standalone) */
-type UncontrolledCheckboxProps = BaseCheckboxProps & {
-  value: boolean;
-  onChange: (checked: boolean) => void;
-  name?: never;
-  control?: never;
-  rules?: never;
-};
-
-export type AppCheckboxProps = ControlledCheckboxProps | UncontrolledCheckboxProps;
-
-/* -------------------- Checkbox Group Types -------------------- */
-
-type CheckboxOption = {
-  label: string;
-  value: string;
-};
-
-type BaseCheckboxGroupProps = {
-  options: CheckboxOption[];
+// Context for Checkbox Group
+const CheckboxGroupContext = createContext<{
+  value: string[];
+  onChange?: (value: string[]) => void;
+  error?: string | { message?: string };
   isDisabled?: boolean;
-  className?: string;
-  error?: { message?: string } | string;
-};
+} | null>(null);
 
-type ControlledCheckboxGroupProps = BaseCheckboxGroupProps & {
-  name: string;
-  control: Control<any>;
-  rules?: any;
-  value?: never;
-  onChange?: never;
-};
-
-type UncontrolledCheckboxGroupProps = BaseCheckboxGroupProps & {
+type AppCheckboxGroupProps = {
   value?: string[];
   onChange?: (value: string[]) => void;
+  error?: string | { message?: string };
+  isDisabled?: boolean;
+  children: React.ReactNode;
 };
 
-export type AppCheckboxGroupProps = ControlledCheckboxGroupProps | UncontrolledCheckboxGroupProps;
-
-function isControlled(props: AppCheckboxProps): props is ControlledCheckboxProps {
-  return 'control' in props && props.control !== undefined;
-}
-
-/* -------------------- Component -------------------- */
-
-export function AppCheckbox(props: AppCheckboxProps) {
-  if (isControlled(props)) {
-    const { name, control, rules, label, isDisabled, className, error, indicatorClassName } = props;
-
-    return (
-      <Controller
-        name={name}
-        control={control}
-        rules={rules}
-        render={({ field: { value, onChange }, fieldState: { error: fieldError } }) => {
-          const errorMessage = error
-            ? typeof error === 'string'
-              ? error
-              : error.message
-            : fieldError?.message;
-
-          return (
-            <View>
-              <CheckboxBase
-                value={!!value}
-                onChange={onChange}
-                label={label}
-                isDisabled={isDisabled}
-                className={className}
-                indicatorClassName={indicatorClassName}
-                hasError={!!errorMessage}
-              />
-              {errorMessage && (
-                <Text
-                  style={{
-                    color: '#ef4444',
-                    marginTop: 4,
-                    marginLeft: 4,
-                    fontSize: 13,
-                  }}
-                >
-                  {errorMessage}
-                </Text>
-              )}
-            </View>
-          );
-        }}
-      />
-    );
-  }
-
-  // Uncontrolled
-  const { value, onChange, label, isDisabled, className, error, indicatorClassName } = props;
-  const errorMessage = typeof error === 'string' ? error : error?.message;
-
+function AppCheckboxGroup({
+  value = [],
+  onChange,
+  error,
+  isDisabled,
+  children,
+}: AppCheckboxGroupProps) {
   return (
-    <View>
-      <CheckboxBase
-        value={value}
-        onChange={onChange}
-        label={label}
-        isDisabled={isDisabled}
-        className={className}
-        indicatorClassName={indicatorClassName}
-        hasError={!!errorMessage}
-      />
-      {errorMessage && (
-        <Text
-          style={{
-            color: '#ef4444',
-            marginTop: 4,
-            marginLeft: 4,
-            fontSize: 13,
-          }}
-        >
-          {errorMessage}
-        </Text>
-      )}
-    </View>
+    <CheckboxGroupContext.Provider value={{ value, onChange, error, isDisabled }}>
+      {children}
+    </CheckboxGroupContext.Provider>
   );
 }
 
-/* -------------------- Base UI -------------------- */
+AppCheckboxGroup.displayName = 'AppCheckboxGroup';
 
-type CheckboxBaseProps = {
-  value: boolean;
-  onChange: (checked: boolean) => void;
-  label?: string;
-  isDisabled?: boolean;
-  className?: string;
-  indicatorClassName?: string;
-  hasError?: boolean;
-};
-
-function CheckboxBase({
+// --- Real Checkbox Implementation ---
+function AppCheckboxImpl({
   value,
   onChange,
+  checkboxValue,
   label,
   isDisabled,
   className,
+  error,
   indicatorClassName,
-  hasError,
-}: CheckboxBaseProps) {
+}: AppCheckboxProps) {
+  const hasError = !!(typeof error === 'string' ? error : error?.message);
+
+  // Boolean mode (single checkbox, no checkboxValue)
+  if (checkboxValue === undefined) {
+    const checked = !!value;
+    const handleChange = () => {
+      if (onChange) onChange(!checked);
+    };
+    return (
+      <Checkbox
+        value={label ?? 'checkbox'}
+        isChecked={checked}
+        onChange={handleChange}
+        isDisabled={isDisabled}
+        className={className}
+      >
+        <CheckboxIndicator
+          className={
+            hasError
+              ? 'border-red-500'
+              : indicatorClassName ||
+                'border-primary-600 data-[checked=true]:border-primary-600 data-[checked=true]:bg-primary-600'
+          }
+        >
+          <CheckboxIcon as={CheckIcon} />
+        </CheckboxIndicator>
+        {label && (
+          <CheckboxLabel className={hasError ? 'text-red-500' : undefined}>{label}</CheckboxLabel>
+        )}
+      </Checkbox>
+    );
+  }
+
+  // Group mode (array of string)
+  const arr: string[] = Array.isArray(value) ? value : [];
+  const checked = arr.includes(checkboxValue!);
+  const handleChange = () => {
+    if (!onChange) return;
+    if (checked) {
+      onChange(arr.filter((v) => v !== checkboxValue));
+    } else {
+      onChange([...arr, checkboxValue!]);
+    }
+  };
+
   return (
-    <Checkbox isChecked={value} onChange={onChange} isDisabled={isDisabled} className={className}>
+    <Checkbox
+      value={checkboxValue}
+      isChecked={checked}
+      onChange={handleChange}
+      isDisabled={isDisabled}
+      className={className}
+    >
       <CheckboxIndicator
         className={
           hasError
@@ -179,7 +119,6 @@ function CheckboxBase({
       >
         <CheckboxIcon as={CheckIcon} />
       </CheckboxIndicator>
-
       {label && (
         <CheckboxLabel className={hasError ? 'text-red-500' : undefined}>{label}</CheckboxLabel>
       )}
@@ -187,109 +126,59 @@ function CheckboxBase({
   );
 }
 
-/* -------------------- Checkbox Group Component -------------------- */
+// --- Patched Checkbox with Group Context ---
+function PatchedAppCheckbox(props: AppCheckboxProps) {
+  const group = useContext(CheckboxGroupContext);
+  const isGroup = !!group && typeof props.checkboxValue === 'string' && Array.isArray(group.value);
+  const hasError = !!(typeof (isGroup ? group.error : props.error) === 'string'
+    ? isGroup
+      ? group.error
+      : props.error
+    : isGroup
+      ? group.error?.message
+      : props.error?.message);
 
-function AppCheckboxGroup(props: AppCheckboxGroupProps) {
-  // 👉 Trường hợp dùng với React Hook Form
-  if ('control' in props) {
-    const { name, control, rules, options, isDisabled, className, error } = props;
-
+  if (isGroup) {
+    const arr = group.value || [];
+    const checked = arr.includes(props.checkboxValue!);
+    const handleChange = () => {
+      if (!group.onChange) return;
+      if (checked) {
+        group.onChange(arr.filter((v) => v !== props.checkboxValue));
+      } else {
+        group.onChange([...arr, props.checkboxValue!]);
+      }
+    };
     return (
-      <Controller
-        name={name}
-        control={control}
-        rules={rules}
-        render={({ field: { value = [], onChange }, fieldState: { error: fieldError } }) => {
-          const errorMessage = error
-            ? typeof error === 'string'
-              ? error
-              : error.message
-            : fieldError?.message;
-
-          return (
-            <View className={className}>
-              <CheckboxGroupBase
-                value={value}
-                onChange={onChange}
-                options={options}
-                isDisabled={isDisabled}
-                hasError={!!errorMessage}
-              />
-              {errorMessage ? (
-                <Text style={{ color: '#ef4444', marginTop: 4, marginLeft: 4, fontSize: 13 }}>
-                  {errorMessage}
-                </Text>
-              ) : null}
-            </View>
-          );
-        }}
-      />
+      <Checkbox
+        value={props.checkboxValue}
+        isChecked={checked}
+        onChange={handleChange}
+        isDisabled={group.isDisabled || props.isDisabled}
+        className={props.className}
+      >
+        <CheckboxIndicator
+          className={
+            hasError
+              ? 'border-red-500'
+              : props.indicatorClassName ||
+                'border-primary-600 data-[checked=true]:border-primary-600 data-[checked=true]:bg-primary-600'
+          }
+        >
+          <CheckboxIcon as={CheckIcon} />
+        </CheckboxIndicator>
+        {props.label && (
+          <CheckboxLabel className={hasError ? 'text-red-500' : undefined}>
+            {props.label}
+          </CheckboxLabel>
+        )}
+      </Checkbox>
     );
   }
-
-  // 👉 Trường hợp dùng độc lập
-  const { error, value = [], onChange, className, ...rest } = props;
-  const handleChange = onChange ?? ((val: string[]) => {});
-  const errorMessage = typeof error === 'string' ? error : error?.message;
-
-  return (
-    <View className={className}>
-      <CheckboxGroupBase
-        value={value}
-        onChange={handleChange}
-        {...rest}
-        hasError={!!errorMessage}
-      />
-      {errorMessage ? (
-        <Text style={{ color: '#ef4444', marginTop: 4, marginLeft: 4, fontSize: 13 }}>
-          {errorMessage}
-        </Text>
-      ) : null}
-    </View>
-  );
+  // fallback to real implementation
+  return <AppCheckboxImpl {...props} />;
 }
+PatchedAppCheckbox.Group = AppCheckboxGroup;
+PatchedAppCheckbox.displayName = 'AppCheckbox';
 
-/* -------------------- Checkbox Group Base UI -------------------- */
-
-type CheckboxGroupBaseProps = {
-  value: string[];
-  onChange: (value: string[]) => void;
-  options: CheckboxOption[];
-  isDisabled?: boolean;
-  hasError?: boolean;
-};
-
-function CheckboxGroupBase({
-  value,
-  onChange,
-  options,
-  isDisabled,
-  hasError,
-}: CheckboxGroupBaseProps) {
-  const handleToggle = (optionValue: string) => (checked: boolean) => {
-    if (checked) {
-      onChange([...value, optionValue]);
-    } else {
-      onChange(value.filter((v) => v !== optionValue));
-    }
-  };
-
-  return (
-    <>
-      {options.map((option) => (
-        <AppCheckbox
-          key={option.value}
-          value={value.includes(option.value)}
-          onChange={handleToggle(option.value)}
-          label={option.label}
-          isDisabled={isDisabled}
-          error={hasError ? ' ' : undefined}
-        />
-      ))}
-    </>
-  );
-}
-
-/* -------------------- Compound Component Pattern -------------------- */
-
-AppCheckbox.Group = AppCheckboxGroup;
+export { PatchedAppCheckbox as AppCheckbox };

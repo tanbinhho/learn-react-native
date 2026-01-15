@@ -176,7 +176,7 @@ export default function ProfileTab() {
           {/* Logout Button */}
           <AppButton
             size="xl"
-            variant="danger"
+            variant="filled"
             onPress={handleLogout}
             title="Đăng xuất"
             prefix={<Feather name="log-out" size={20} color="#ffffff" />}

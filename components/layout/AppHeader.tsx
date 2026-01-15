@@ -1,3 +1,4 @@
+import { router } from 'expo-router';
 import { ArrowLeft, X } from 'lucide-react-native';
 import React from 'react';
 import { Pressable, View } from 'react-native';
@@ -11,12 +12,15 @@ interface AppHeaderProps {
 }
 
 const AppHeader = ({ title, left = 'back', right, onBack }: AppHeaderProps) => {
+  // Nếu không truyền onBack thì mặc định là router.back()
+  const handleBack = onBack || (() => router.back());
+
   const renderLeft = () => {
     if (left === null) return null;
 
     if (left === 'back') {
       return (
-        <Pressable hitSlop={10} onPress={onBack} className="p-2">
+        <Pressable hitSlop={10} onPress={handleBack} className="p-2">
           <ArrowLeft size={24} />
         </Pressable>
       );
@@ -24,7 +28,7 @@ const AppHeader = ({ title, left = 'back', right, onBack }: AppHeaderProps) => {
 
     if (left === 'close') {
       return (
-        <Pressable hitSlop={10} onPress={onBack} className="p-2">
+        <Pressable hitSlop={10} onPress={handleBack} className="p-2">
           <X size={24} />
         </Pressable>
       );
