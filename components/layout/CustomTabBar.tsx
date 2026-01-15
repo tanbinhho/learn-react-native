@@ -102,7 +102,9 @@ function Tab({
   return (
     <Pressable className="flex-1 items-center justify-center" onPress={onPress}>
       <Icon size={18} color={focused ? '#09c0ba' : '#aaa'} />
-      <Text className={`mt-1 text-[11px] ${focused ? 'text-[#09c0ba]' : 'text-zinc-400'}`}>
+      <Text
+        className={`mt-1 text-[11px] ${focused ? 'font-medium text-[#09c0ba]' : 'text-zinc-400'}`}
+      >
         {label}
       </Text>
     </Pressable>

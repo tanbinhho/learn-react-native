@@ -1,6 +1,7 @@
 import { AppActionSheet } from '@/components/common/AppActionSheet';
 import AppHeader from '@/components/layout/AppHeader';
 import { TabScreenWrapper } from '@/components/layout/TabScreenWrapper';
+import ScheduleCalendar from '@/components/pages/schedule/ScheduleCalendar';
 import ScheduleStatistic from '@/components/pages/schedule/ScheduleStatistic';
 import TimesheetHistory from '@/components/pages/schedule/TimesheetHistory';
 import { ThemedView } from '@/components/themed-view';
@@ -81,9 +82,9 @@ export default function ScheduleScreen() {
             </View>
           }
         />
-
         <TabScreenWrapper className="gap-5">
           <ScheduleStatistic />
+          <ScheduleCalendar />
           <TimesheetHistory />
         </TabScreenWrapper>
       </ThemedView>

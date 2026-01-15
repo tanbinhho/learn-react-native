@@ -1,6 +1,6 @@
 import { Text } from '@gluestack-ui/themed';
 import React from 'react';
-import { FlatList, View } from 'react-native';
+import { View } from 'react-native';
 
 export interface TimelineItem {
   id: string;
@@ -12,57 +12,53 @@ interface AttendanceTimelineProps {
   data: TimelineItem[];
 }
 
+const renderNode = (value: React.ReactNode, textClassName: string) => {
+  if (typeof value === 'string') {
+    return <Text className={textClassName}>{value}</Text>;
+  }
+
+  return value;
+};
+
 export const AttendanceTimeline = ({ data }: AttendanceTimelineProps) => {
+  const lastIndex = data.length - 1;
+  const DOT_SIZE = 12;
+  const LINE_WIDTH = 2;
+
   return (
-    <FlatList
-      data={data}
-      keyExtractor={(item) => item.id}
-      renderItem={({ item, index }) => {
-        const isLast = index === data.length - 1;
+    <View>
+      {data.map((item, index) => {
+        const isLast = index === lastIndex;
 
         return (
-          <View className="flex-row">
-            {/* LEFT: DOT + LINE */}
-            <View className="mr-3 items-center">
-              {/* Dot */}
-              <View className="mt-1 h-3 w-3 rounded-full border-2 border-teal-500 bg-white" />
+          <View key={item.id} className="flex-row">
+            <View className="relative mr-3 w-5 items-center self-stretch">
               <View
-                className="mt-1 flex-1 bg-red-200"
+                className="absolute left-1/2 -translate-x-1/2 bg-gray-200"
                 style={{
-                  minWidth: 1,
-                  height: 20,
+                  width: LINE_WIDTH,
+                  top: 15,
+                  bottom: isLast ? 0 : 3,
                 }}
               />
-              {/* Line */}
-              {!isLast && <View className="mt-1 h-5 w-1 flex-1 bg-gray-200" />}
+              <View
+                className="rounded-full border-2 border-primary-500 bg-white"
+                style={{ width: DOT_SIZE, height: DOT_SIZE }}
+              />
             </View>
 
-            {/* RIGHT: CONTENT */}
-            <View className="flex-1 pb-6">
-              {/* Title */}
-              <View>
-                {typeof item.title === 'string' ? (
-                  <Text className="text-base font-semibold">{item.title}</Text>
-                ) : (
-                  item.title
-                )}
-              </View>
+            <View className="flex-1 pb-1">
+              <View>{renderNode(item.title, 'text-base font-semibold')}</View>
 
-              {/* Description */}
-              {item.description && (
+              {item.description ? (
                 <View className="mt-1">
-                  {typeof item.description === 'string' ? (
-                    <Text className="text-sm text-gray-600">{item.description}</Text>
-                  ) : (
-                    item.description
-                  )}
+                  {renderNode(item.description, 'text-sm text-gray-600')}
                 </View>
-              )}
+              ) : null}
             </View>
           </View>
         );
-      }}
-      showsVerticalScrollIndicator={false}
-    />
+      })}
+    </View>
   );
 };

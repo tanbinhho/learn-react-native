@@ -1,3 +1,4 @@
+import { cn } from '@/utils/cn';
 import React from 'react';
 import { Control, Controller, RegisterOptions } from 'react-hook-form';
 import { Text, View } from 'react-native';
@@ -23,33 +24,31 @@ export type SelectOption = {
   value: string;
 };
 
-type BaseSelectProps = {
+interface BaseSelectProps {
   options: SelectOption[];
   placeholder?: string;
   isDisabled?: boolean;
+  /** Wrapper className for container */
   className?: string;
+  /** Select trigger className for custom UI */
+  selectClassName?: string;
   error?: string | { message?: string };
   size?: 'sm' | 'md' | 'lg' | 'xl';
   variant?: 'outline' | 'underlined' | 'rounded';
-};
+}
 
 /** Controlled Select (React Hook Form) */
-type ControlledSelectProps = BaseSelectProps & {
+interface ControlledSelectProps extends Omit<BaseSelectProps, 'value' | 'onChange'> {
   name: string;
   control: Control<any>;
   rules?: RegisterOptions;
-  value?: never;
-  onChange?: never;
-};
+}
 
 /** Uncontrolled Select (standalone) */
-type UncontrolledSelectProps = BaseSelectProps & {
+interface UncontrolledSelectProps extends Omit<BaseSelectProps, 'name' | 'control' | 'rules'> {
   value: string;
   onChange: (value: string) => void;
-  name?: never;
-  control?: never;
-  rules?: never;
-};
+}
 
 export type AppSelectProps = ControlledSelectProps | UncontrolledSelectProps;
 
@@ -60,79 +59,56 @@ function isControlled(props: AppSelectProps): props is ControlledSelectProps {
 /* -------------------- Component -------------------- */
 
 export function AppSelect(props: AppSelectProps) {
-  if (isControlled(props)) {
-    const {
-      name,
-      control,
-      rules,
-      options,
-      placeholder = 'Select an option',
-      isDisabled,
-      className,
-      error,
-      size = 'md',
-      variant = 'outline',
-    } = props;
+  const {
+    className,
+    error,
+    size = 'md',
+    variant = 'outline',
+    options,
+    placeholder = 'Select an option',
+    isDisabled,
+    ...rest
+  } = props;
 
+  // If no className, use max-content. If className provided, use it.
+  const wrapperClass = className ? className : 'w-fit max-w-full self-start';
+  const errorMessage = typeof error === 'string' ? error : error?.message;
+
+  if (isControlled(props)) {
+    const { name, control, rules } = props as ControlledSelectProps;
     return (
       <Controller
         name={name}
         control={control}
         rules={rules}
-        render={({ field: { value, onChange }, fieldState: { error: fieldError } }) => {
-          const errorMessage = error
-            ? typeof error === 'string'
-              ? error
-              : error.message
-            : fieldError?.message;
-
-          return (
-            <View className={className}>
-              <SelectBase
-                value={value || ''}
-                onChange={onChange}
-                options={options}
-                placeholder={placeholder}
-                isDisabled={isDisabled}
-                hasError={!!errorMessage}
-                size={size}
-                variant={variant}
-              />
-              {errorMessage && (
-                <Text
-                  style={{
-                    color: '#ef4444',
-                    marginTop: 4,
-                    marginLeft: 4,
-                    fontSize: 13,
-                  }}
-                >
-                  {errorMessage}
-                </Text>
-              )}
-            </View>
-          );
-        }}
+        render={({ field: { value, onChange }, fieldState: { error: fieldError } }) => (
+          <View className={cn(wrapperClass)}>
+            <SelectBase
+              value={value || ''}
+              onChange={onChange}
+              options={options}
+              placeholder={placeholder}
+              isDisabled={isDisabled}
+              hasError={!!(errorMessage || fieldError?.message)}
+              size={size}
+              variant={variant}
+              className={className}
+            />
+            {(errorMessage || fieldError?.message) && (
+              <Text style={{ color: '#ef4444', marginTop: 4, marginLeft: 4, fontSize: 13 }}>
+                {errorMessage || fieldError?.message}
+              </Text>
+            )}
+          </View>
+        )}
       />
     );
   }
 
   // Uncontrolled
-  const {
-    value,
-    onChange,
-    options,
-    placeholder = 'Select an option',
-    isDisabled,
-    className,
-    error,
-    size = 'md',
-    variant = 'outline',
-  } = props;
-  const errorMessage = typeof error === 'string' ? error : error?.message;
-
+  const { value, onChange } = props as UncontrolledSelectProps;
   return (
-    <View className={className}>
+    <View className={cn(wrapperClass)}>
       <SelectBase
         value={value}
         onChange={onChange}
@@ -142,16 +118,10 @@ export function AppSelect(props: AppSelectProps) {
         hasError={!!errorMessage}
         size={size}
         variant={variant}
+        className={className}
       />
       {errorMessage && (
-        <Text
-          style={{
-            color: '#ef4444',
-            marginTop: 4,
-            marginLeft: 4,
-            fontSize: 13,
-          }}
-        >
+        <Text style={{ color: '#ef4444', marginTop: 4, marginLeft: 4, fontSize: 13 }}>
           {errorMessage}
         </Text>
       )}
@@ -170,6 +140,7 @@ type SelectBaseProps = {
   hasError?: boolean;
   size?: 'sm' | 'md' | 'lg' | 'xl';
   variant?: 'outline' | 'underlined' | 'rounded';
+  className?: string;
 };
 
 function SelectBase({
@@ -181,8 +152,8 @@ function SelectBase({
   hasError,
   size = 'md',
   variant = 'outline',
+  className,
 }: SelectBaseProps) {
-  // Tìm label tương ứng với value hiện tại
   const selectedOption = options.find((opt) => opt.value === value);
   const displayValue = selectedOption ? selectedOption.label : '';
 
@@ -191,9 +162,9 @@ function SelectBase({
       <SelectTrigger
         size={size}
         variant={variant}
-        className={hasError ? 'border-red-500' : undefined}
+        className={cn('max-w-full self-start', hasError ? 'border-red-500' : undefined, className)}
       >
-        <SelectInput placeholder={placeholder} value={displayValue} className="flex-1" />
+        <SelectInput placeholder={placeholder} value={displayValue} className="min-w-[80px] px-2" />
         <SelectIcon className="mr-4" as={ChevronDownIcon} />
       </SelectTrigger>
       <SelectPortal>

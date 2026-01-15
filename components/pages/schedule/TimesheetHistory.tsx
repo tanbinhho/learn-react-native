@@ -5,11 +5,14 @@ import { AppText } from '@/components/common/AppText';
 import CardNotification from '@/components/common/CardNotification';
 import FlexRow from '@/components/common/FlexRow';
 import { Divider } from '@/components/ui/divider';
+import { INDICATOR_COLOR } from '@/constants/theme';
+import { Sun } from 'lucide-react-native';
 import React from 'react';
 import { Text, View } from 'react-native';
 import { AttendanceTimeline } from './AttendanceTimeline';
 
 const TimesheetHistory = () => {
+  const [timeSelect, setTimeSelect] = React.useState<string>('week');
   const timeOption: SelectOption[] = [
     { label: '7 ngày', value: 'week' },
     { label: '1 tháng', value: 'month' },
@@ -19,32 +22,40 @@ const TimesheetHistory = () => {
     <>
       <AppText.Title>Hôm nay</AppText.Title>
       <CardNotification color="warning">
-        <FlexRow>
-          <AppText.Title>Ca sáng</AppText.Title>
-          <AppTag variant="solid" color="primary" size="sm">
-            08:00 - 15:00
-          </AppTag>
-        </FlexRow>
-        <AppText.Caption variant="label">
-          Nhân viên: <AppText.Label>Hồ Tấn Bình</AppText.Label>
-        </AppText.Caption>
-        <FlexRow>
-          <AppText.Caption variant="label">
-            Chấm công: <AppText.Label>08:00 - --:--</AppText.Label>
-          </AppText.Caption>
-          <AppTag variant="solid" color="info" shape="pill" size="sm">
-            Đang làm
-          </AppTag>
-        </FlexRow>
+        <View className="flex-row items-start gap-3">
+          <View className="h-10 w-10 items-center justify-center rounded-full bg-warning-100">
+            <Sun size={18} color={INDICATOR_COLOR.warning} />
+          </View>
+          <View className="flex-1">
+            <FlexRow>
+              <AppText.Title>Ca sáng</AppText.Title>
+              <AppTag variant="solid" color="primary" size="sm">
+                08:00 - 15:00
+              </AppTag>
+            </FlexRow>
+            <AppText.Caption variant="label">
+              Nhân viên: <AppText.Label>Hồ Tấn Bình</AppText.Label>
+            </AppText.Caption>
+            <FlexRow>
+              <AppText.Caption variant="label">
+                Chấm công: <AppText.Label>08:00 - --:--</AppText.Label>
+              </AppText.Caption>
+              <AppTag variant="solid" color="info" shape="pill" size="sm">
+                Đang làm
+              </AppTag>
+            </FlexRow>
+          </View>
+        </View>
       </CardNotification>
       <Divider />
       <AppBox>
-        <FlexRow>
+        <FlexRow className="mb-2.5">
           <AppText.Label>Lịch sử chấm công</AppText.Label>
           <AppSelect
+            size="sm"
             placeholder="Chọn ngày"
-            value="week"
-            onChange={() => console.log(1)}
+            value={timeSelect}
+            onChange={setTimeSelect}
             options={timeOption}
           />
         </FlexRow>
