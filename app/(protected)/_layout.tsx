@@ -1,5 +1,5 @@
 import { useAuth } from '@/hooks/auth/useAuth';
-import { Redirect, Slot, usePathname } from 'expo-router';
+import { Redirect, Stack, usePathname } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function ProtectedLayout() {
@@ -15,7 +15,7 @@ export default function ProtectedLayout() {
 
   return (
     <SafeAreaView style={{ flex: 1 }} edges={['top', 'bottom']}>
-      <Slot />
+      <Stack screenOptions={{ headerShown: false }} />
     </SafeAreaView>
   );
 }
