@@ -1,8 +1,9 @@
 import { cn } from '@/utils/cn';
 import React from 'react';
-import { Control, Controller, RegisterOptions } from 'react-hook-form';
-import { Text, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { ChevronDownIcon } from '../ui/icon';
+
+import { X } from 'lucide-react-native';
 import {
   Select,
   SelectBackdrop,
@@ -19,153 +20,93 @@ import {
 
 /* -------------------- Types -------------------- */
 
-export type SelectOption = {
+export interface SelectOption {
   label: string;
   value: string;
-};
+}
 
-interface BaseSelectProps {
+// Đảm bảo value, onChange, error là optional để AppForm.Item inject tự động
+
+export interface AppSelectProps {
   options: SelectOption[];
+  value?: string;
+  onChange?: (value: string) => void;
+  error?: string | { message?: string };
   placeholder?: string;
   isDisabled?: boolean;
-  /** Wrapper className for container */
   className?: string;
-  /** Select trigger className for custom UI */
-  selectClassName?: string;
-  error?: string | { message?: string };
-  size?: 'sm' | 'md' | 'lg' | 'xl';
-  variant?: 'outline' | 'underlined' | 'rounded';
-}
-
-/** Controlled Select (React Hook Form) */
-interface ControlledSelectProps extends Omit<BaseSelectProps, 'value' | 'onChange'> {
-  name: string;
-  control: Control<any>;
-  rules?: RegisterOptions;
-}
-
-/** Uncontrolled Select (standalone) */
-interface UncontrolledSelectProps extends Omit<BaseSelectProps, 'name' | 'control' | 'rules'> {
-  value: string;
-  onChange: (value: string) => void;
-}
-
-export type AppSelectProps = ControlledSelectProps | UncontrolledSelectProps;
-
-function isControlled(props: AppSelectProps): props is ControlledSelectProps {
-  return 'control' in props && props.control !== undefined;
+  size?: 'large' | 'middle' | 'small';
 }
 
 /* -------------------- Component -------------------- */
 
 export function AppSelect(props: AppSelectProps) {
   const {
-    className,
-    error,
-    size = 'md',
-    variant = 'outline',
     options,
+    value = '',
+    onChange,
+    error,
     placeholder = 'Select an option',
     isDisabled,
-    ...rest
+    className,
+    size = 'middle',
   } = props;
-
-  // If no className, use max-content. If className provided, use it.
-  const wrapperClass = className ? className : 'w-fit max-w-full self-start';
-  const errorMessage = typeof error === 'string' ? error : error?.message;
-
-  if (isControlled(props)) {
-    const { name, control, rules } = props as ControlledSelectProps;
-    return (
-      <Controller
-        name={name}
-        control={control}
-        rules={rules}
-        render={({ field: { value, onChange }, fieldState: { error: fieldError } }) => (
-          <View className={cn(wrapperClass)}>
-            <SelectBase
-              value={value || ''}
-              onChange={onChange}
-              options={options}
-              placeholder={placeholder}
-              isDisabled={isDisabled}
-              hasError={!!(errorMessage || fieldError?.message)}
-              size={size}
-              variant={variant}
-              className={className}
-            />
-            {(errorMessage || fieldError?.message) && (
-              <Text style={{ color: '#ef4444', marginTop: 4, marginLeft: 4, fontSize: 13 }}>
-                {errorMessage || fieldError?.message}
-              </Text>
-            )}
-          </View>
-        )}
-      />
-    );
-  }
-
-  // Uncontrolled
-  const { value, onChange } = props as UncontrolledSelectProps;
+  const sizeStyles: Record<'large' | 'middle' | 'small', { input: string; text: string }> = {
+    large: {
+      input: 'min-h-[56px] px-4 text-base',
+      text: 'text-base',
+    },
+    middle: {
+      input: 'min-h-[48px] px-4 text-sm',
+      text: 'text-sm',
+    },
+    small: {
+      input: 'min-h-[40px] px-3 text-sm',
+      text: 'text-sm',
+    },
+  };
+  const sizeClass = sizeStyles[size] ?? sizeStyles.middle;
+  const hasError = !!error;
   return (
-    <View className={cn(wrapperClass)}>
-      <SelectBase
-        value={value}
-        onChange={onChange}
-        options={options}
-        placeholder={placeholder}
-        isDisabled={isDisabled}
-        hasError={!!errorMessage}
-        size={size}
-        variant={variant}
-        className={className}
-      />
-      {errorMessage && (
-        <Text style={{ color: '#ef4444', marginTop: 4, marginLeft: 4, fontSize: 13 }}>
-          {errorMessage}
-        </Text>
+    <Select
+      className={cn(
+        ' rounded-xl border bg-white text-gray-900 shadow-sm transition-colors',
+        sizeClass.input,
+        hasError ? 'border-red-500' : 'border-gray-300',
+        className,
       )}
-    </View>
-  );
-}
-
-/* -------------------- Base UI -------------------- */
-
-type SelectBaseProps = {
-  value: string;
-  onChange: (value: string) => void;
-  options: SelectOption[];
-  placeholder: string;
-  isDisabled?: boolean;
-  hasError?: boolean;
-  size?: 'sm' | 'md' | 'lg' | 'xl';
-  variant?: 'outline' | 'underlined' | 'rounded';
-  className?: string;
-};
-
-function SelectBase({
-  value,
-  onChange,
-  options,
-  placeholder,
-  isDisabled,
-  hasError,
-  size = 'md',
-  variant = 'outline',
-  className,
-}: SelectBaseProps) {
-  const selectedOption = options.find((opt) => opt.value === value);
-  const displayValue = selectedOption ? selectedOption.label : '';
-
-  return (
-    <Select isDisabled={isDisabled} selectedValue={value} onValueChange={onChange}>
-      <SelectTrigger
-        size={size}
-        variant={variant}
-        className={cn('max-w-full self-start', hasError ? 'border-red-500' : undefined, className)}
-      >
-        <SelectInput placeholder={placeholder} value={displayValue} className="min-w-[80px] px-2" />
-        <SelectIcon className="mr-4" as={ChevronDownIcon} />
+      isDisabled={isDisabled}
+      selectedValue={value}
+      onValueChange={onChange}
+    >
+      <SelectTrigger className="border- flex-1 flex-row items-center justify-between gap-2">
+        <SelectInput
+          placeholder={placeholder}
+          value={options.find((opt) => opt.value === value)?.label || ''}
+          className={cn(
+            'px-0 font-medium',
+            sizeClass.text,
+            value ? 'text-gray-900' : 'text-gray-400',
+            !value ? 'min-w-[120px] max-w-[200px]' : '',
+          )}
+        />
+        {/* Nút xóa value dùng icon X của lucide */}
+        <View className="flex-row items-center gap-1">
+          {value ? (
+            <Pressable
+              onPress={(e) => {
+                e.stopPropagation?.();
+                if (onChange) onChange('');
+              }}
+              className="h-6 w-6 items-center justify-center rounded-full bg-gray-200 active:bg-gray-300"
+              hitSlop={8}
+              style={{ borderWidth: 0 }}
+            >
+              <X size={14} color="#888" />
+            </Pressable>
+          ) : null}
+          <SelectIcon as={ChevronDownIcon} />
+        </View>
       </SelectTrigger>
       <SelectPortal>
         <SelectBackdrop />

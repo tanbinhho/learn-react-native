@@ -123,6 +123,22 @@ function AppFormItem({ name, label, rules, children, className }: AppFormItemPro
                 error: error?.message,
               });
             }
+            // AppDatePicker
+            if (type && (type.name === 'AppDatePicker' || type.displayName === 'AppDatePicker')) {
+              return React.cloneElement(children as React.ReactElement<any>, {
+                value,
+                onChange,
+                error: error?.message,
+              });
+            }
+            // AppSelect
+            if (type && (type.name === 'AppSelect' || type.displayName === 'AppSelect')) {
+              return React.cloneElement(children as React.ReactElement<any>, {
+                value,
+                onChange,
+                error: error?.message,
+              });
+            }
             // AppInput and others
             return React.cloneElement(children as React.ReactElement<any>, {
               value,

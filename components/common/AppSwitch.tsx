@@ -33,7 +33,8 @@ export function AppSwitch({
       onValueChange={onChange}
       disabled={disabled}
       size={size}
-      className={hasError ? 'border-red-500' : className}
+      className={hasError ? 'border-red-500' : ''}
+      style={{ alignSelf: 'flex-start', minWidth: undefined, width: undefined, flex: undefined }}
       {...rest}
     />
   );

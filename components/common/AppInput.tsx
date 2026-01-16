@@ -37,12 +37,12 @@ const sizeStyles: Record<AppInputSize, { input: string; field: string; slot: str
     slot: 'text-base',
   },
   middle: {
-    input: 'min-h-[48px] px-2 text-sm',
+    input: 'min-h-[48px] px-4 text-sm',
     field: 'text-sm',
     slot: 'text-sm',
   },
   small: {
-    input: 'min-h-[40px] px-2 text-sm',
+    input: 'min-h-[40px] px-3 text-sm',
     field: 'text-sm',
     slot: 'text-sm',
   },
@@ -79,7 +79,7 @@ function BaseAppInput({
     className,
   );
   const fieldClassName = clsx(
-    'flex-1 text-gray-900 placeholder:text-gray-400 font-medium',
+    'flex-1 text-gray-900 placeholder:text-gray-400 font-medium px-0',
     sizeClass.field,
     inputFieldClassName,
   );

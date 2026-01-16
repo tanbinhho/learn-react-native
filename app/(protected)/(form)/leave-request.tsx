@@ -1,9 +1,11 @@
 import { AppBox } from '@/components/common/AppBox';
 import { AppButton } from '@/components/common/AppButton';
 import { AppCheckbox } from '@/components/common/AppCheckbox';
+import { AppDatePicker } from '@/components/common/AppDatePicker';
 import { AppForm } from '@/components/common/AppForm';
 import AppInput from '@/components/common/AppInput';
 import { AppRadio } from '@/components/common/AppRadio';
+import { AppSelect } from '@/components/common/AppSelect';
 import { AppSwitch } from '@/components/common/AppSwitch';
 import { AppText } from '@/components/common/AppText';
 import FlexRow from '@/components/common/FlexRow';
@@ -30,6 +32,8 @@ const loginSchema = yup
     interests: yup.array().of(yup.string()).min(1, 'Chọn ít nhất 1 sở thích'),
     agree: yup.boolean().oneOf([true], 'Bạn phải đồng ý'),
     gender: yup.string().required('Chọn giới tính'),
+    birthday: yup.string().required('Chọn ngày sinh'),
+    exampleSelect: yup.string().required('Vui lòng chọn một mục'),
   })
   .required();
 
@@ -45,6 +49,8 @@ const LeaveRequest = () => {
       interests: [],
       agree: false,
       gender: '',
+      birthday: '',
+      exampleSelect: '',
     },
   });
 
@@ -66,6 +72,19 @@ const LeaveRequest = () => {
           <AppForm.Item name="reason" label="Lý do nghỉ">
             <AppInput placeholder="Nhập lý do nghỉ" autoCapitalize="none" autoCorrect={false} />
           </AppForm.Item>
+
+          <AppForm.Item name="exampleSelect" label="Ví dụ chọn">
+            <AppSelect
+              options={[
+                { label: 'Option 1', value: '1' },
+                { label: 'Option 2', value: '2' },
+                { label: 'Option 3', value: '3' },
+              ]}
+              placeholder="Chọn một mục"
+              className="w-full"
+            />
+          </AppForm.Item>
+
           <AppForm.Item name="someSwitch" label="Lý do nghỉ">
             <AppSwitch />
           </AppForm.Item>
@@ -90,6 +109,14 @@ const LeaveRequest = () => {
               <AppRadio radioValue="female" label="Female" />
               <AppRadio radioValue="other" label="Other" />
             </AppRadio.Group>
+          </AppForm.Item>
+
+          <AppForm.Item
+            name="birthday"
+            label="Ngày sinh"
+            rules={{ required: 'Vui lòng chọn ngày sinh' }}
+          >
+            <AppDatePicker placeholder="Chọn ngày sinh" />
           </AppForm.Item>
 
           <AppButton
