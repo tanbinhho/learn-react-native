@@ -1,165 +1,94 @@
-import { Control, Controller } from 'react-hook-form';
-import { Text, View } from 'react-native';
-import { CircleIcon } from '../ui/icon';
-import { Radio, RadioGroup, RadioIcon, RadioIndicator, RadioLabel } from '../ui/radio';
+import React from 'react';
+import { Pressable, Text, View } from 'react-native';
 
-/* -------------------- Single Radio Types -------------------- */
-
-type BaseRadioItemProps = {
-  label: string;
-  value: string;
-  isDisabled?: boolean;
-  className?: string;
-};
-
-export type AppRadioItemProps = BaseRadioItemProps;
-
-/* -------------------- Radio Group Types -------------------- */
-
-type RadioOption = {
-  label: string;
-  value: string;
-};
-
-type BaseRadioGroupProps = {
-  options: RadioOption[];
-  isDisabled?: boolean;
-  className?: string;
-  error?: { message?: string } | string;
-};
-
-type ControlledRadioGroupProps = BaseRadioGroupProps & {
-  name: string;
-  control: Control<any>;
-  rules?: any;
-  value?: never;
-  onChange?: never;
-};
-
-type UncontrolledRadioGroupProps = BaseRadioGroupProps & {
-  name?: undefined;
-  control?: undefined;
-  rules?: undefined;
+export type AppRadioProps = {
   value?: string;
   onChange?: (value: string) => void;
+  radioValue?: string;
+  label?: string;
+  isDisabled?: boolean;
+  className?: string;
 };
 
-export type AppRadioGroupProps = ControlledRadioGroupProps | UncontrolledRadioGroupProps;
+type AppRadioGroupProps = {
+  value?: string;
+  onChange?: (value: string) => void;
+  isDisabled?: boolean;
+  children: React.ReactNode;
+  name?: string;
+  className?: string;
+};
 
-/* -------------------- Single Radio Component -------------------- */
-
-export function AppRadio({ label, value, isDisabled, className }: AppRadioItemProps) {
+function AppRadioGroup({
+  value = '',
+  onChange,
+  isDisabled,
+  children,
+  name,
+  className,
+}: AppRadioGroupProps) {
   return (
-    <Radio
-      value={value}
-      isDisabled={isDisabled}
-      className={className || 'flex-row items-center gap-2'}
-    >
-      <RadioIndicator>
-        <RadioIcon as={CircleIcon} />
-      </RadioIndicator>
-      <RadioLabel>{label}</RadioLabel>
-    </Radio>
-  );
-}
-
-/* -------------------- Radio Group Component -------------------- */
-
-function AppRadioGroup(props: AppRadioGroupProps) {
-  // 👉 Trường hợp dùng với React Hook Form
-  if ('control' in props && props.control !== undefined) {
-    const { name, control, rules, options, isDisabled, className, error } = props;
-
-    return (
-      <Controller
-        name={name}
-        control={control}
-        rules={rules}
-        render={({ field: { value, onChange }, fieldState: { error: fieldError } }) => {
-          const errorMessage = error
-            ? typeof error === 'string'
-              ? error
-              : error.message
-            : fieldError?.message;
-
-          return (
-            <View>
-              <RadioGroupBase
-                value={value}
-                onChange={onChange}
-                options={options}
-                isDisabled={isDisabled}
-                className={className}
-                hasError={!!errorMessage}
-              />
-              {errorMessage ? (
-                <Text style={{ color: '#ef4444', marginTop: 4, marginLeft: 4, fontSize: 13 }}>
-                  {errorMessage}
-                </Text>
-              ) : null}
-            </View>
-          );
-        }}
-      />
-    );
-  }
-
-  // 👉 Trường hợp dùng độc lập
-  const { error, value = '', onChange, ...rest } = props;
-  const handleChange = onChange ?? ((val: string) => {});
-  const errorMessage = typeof error === 'string' ? error : error?.message;
-
-  return (
-    <View>
-      <RadioGroupBase value={value} onChange={handleChange} {...rest} hasError={!!errorMessage} />
-      {errorMessage ? (
-        <Text style={{ color: '#ef4444', marginTop: 4, marginLeft: 4, fontSize: 13 }}>
-          {errorMessage}
-        </Text>
-      ) : null}
+    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+      {React.Children.map(children, (child) => {
+        if (!React.isValidElement(child)) return child;
+        return React.cloneElement(child, {
+          value,
+          onChange,
+          isDisabled,
+        });
+      })}
     </View>
   );
 }
 
-/* -------------------- Radio Group Base UI -------------------- */
+AppRadioGroup.displayName = 'AppRadioGroup';
 
-type RadioGroupBaseProps = {
-  value: string;
-  onChange: (value: string) => void;
-  options: RadioOption[];
-  isDisabled?: boolean;
-  className?: string;
-  hasError?: boolean;
-};
-
-function RadioGroupBase({
-  value,
-  onChange,
-  options,
-  isDisabled,
-  className,
-  hasError,
-}: RadioGroupBaseProps) {
+function AppRadio({ value, onChange, radioValue, label, isDisabled, className }: AppRadioProps) {
+  const checked = value === radioValue;
+  const handleChange = () => {
+    if (isDisabled) return;
+    if (onChange && radioValue !== undefined) onChange(radioValue);
+  };
   return (
-    <RadioGroup value={value} onChange={onChange} className={className}>
-      {options.map((option) => (
-        <Radio
-          key={option.value}
-          value={option.value}
-          isDisabled={isDisabled}
-          className="flex-row items-center gap-2"
-        >
-          <RadioIndicator className={hasError ? 'border-red-500' : undefined}>
-            <RadioIcon as={CircleIcon} />
-          </RadioIndicator>
-
-          <RadioLabel className={hasError ? 'text-red-500' : undefined}>{option.label}</RadioLabel>
-        </Radio>
-      ))}
-    </RadioGroup>
+    <Pressable
+      onPress={handleChange}
+      disabled={isDisabled}
+      style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginRight: 16,
+        opacity: isDisabled ? 0.5 : 1,
+      }}
+    >
+      <View
+        style={{
+          width: 20,
+          height: 20,
+          borderRadius: 10,
+          borderWidth: 2,
+          borderColor: checked ? '#2563eb' : '#ccc',
+          alignItems: 'center',
+          justifyContent: 'center',
+          backgroundColor: '#fff',
+        }}
+      >
+        {checked ? (
+          <View
+            style={{
+              width: 10,
+              height: 10,
+              borderRadius: 5,
+              backgroundColor: '#2563eb',
+            }}
+          />
+        ) : null}
+      </View>
+      {label && <Text style={{ marginLeft: 8, color: '#222', fontSize: 16 }}>{label}</Text>}
+    </Pressable>
   );
 }
 
-/* -------------------- Compound Component Pattern -------------------- */
-
 AppRadio.Group = AppRadioGroup;
+AppRadio.displayName = 'AppRadio';
+
+export { AppRadio };

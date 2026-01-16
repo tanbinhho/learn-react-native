@@ -13,12 +13,12 @@ import { Text, View } from 'react-native';
 export interface AppFormProps {
   children: React.ReactNode;
   className?: string;
-  methods: UseFormReturn<any>;
+  form: UseFormReturn<any>;
 }
 
-function AppForm({ children, className, methods }: AppFormProps) {
+function AppForm({ children, className, form }: AppFormProps) {
   return (
-    <FormProvider {...methods}>
+    <FormProvider {...form}>
       <View className={cn(className)}>{children}</View>
     </FormProvider>
   );
@@ -61,14 +61,14 @@ function AppFormItem({ name, label, rules, children, className }: AppFormItemPro
                 return React.cloneElement(children as React.ReactElement<any>, {
                   value,
                   onChange,
-                  error: error?.message,
+                  error,
                 });
               }
               // Single checkbox
               return React.cloneElement(children as React.ReactElement<any>, {
                 value,
                 onChange,
-                error: error?.message,
+                error,
               });
             }
             // AppCheckbox.Group (direct usage)
@@ -80,7 +80,7 @@ function AppFormItem({ name, label, rules, children, className }: AppFormItemPro
               return React.cloneElement(children as React.ReactElement<any>, {
                 value,
                 onChange,
-                error: error?.message,
+                error,
               });
             }
             // AppSwitch

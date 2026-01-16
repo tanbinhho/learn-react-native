@@ -3,6 +3,7 @@ import { AppButton } from '@/components/common/AppButton';
 import { AppCheckbox } from '@/components/common/AppCheckbox';
 import { AppForm } from '@/components/common/AppForm';
 import AppInput from '@/components/common/AppInput';
+import { AppRadio } from '@/components/common/AppRadio';
 import { AppSwitch } from '@/components/common/AppSwitch';
 import { AppText } from '@/components/common/AppText';
 import FlexRow from '@/components/common/FlexRow';
@@ -28,18 +29,26 @@ const loginSchema = yup
     someSwitch: yup.boolean().required('This field is required'),
     interests: yup.array().of(yup.string()).min(1, 'Chọn ít nhất 1 sở thích'),
     agree: yup.boolean().oneOf([true], 'Bạn phải đồng ý'),
+    gender: yup.string().required('Chọn giới tính'),
   })
   .required();
 
 const LeaveRequest = () => {
   const { id } = useLocalSearchParams();
 
-  const methods = useForm({
+  const form = useForm({
     mode: 'onTouched',
     resolver: yupResolver(loginSchema),
+    defaultValues: {
+      reason: '',
+      someSwitch: false,
+      interests: [],
+      agree: false,
+      gender: '',
+    },
   });
 
-  // console.log('id', methods.formState.errors);
+  console.log('id', id);
 
   return (
     <ThemedView className="flex-1">
@@ -53,7 +62,7 @@ const LeaveRequest = () => {
             </FlexRow>
           ))}
         </AppBox.Primary>
-        <AppForm methods={methods}>
+        <AppForm form={form}>
           <AppForm.Item name="reason" label="Lý do nghỉ">
             <AppInput placeholder="Nhập lý do nghỉ" autoCapitalize="none" autoCorrect={false} />
           </AppForm.Item>
@@ -74,8 +83,17 @@ const LeaveRequest = () => {
           <AppForm.Item name="agree">
             <AppCheckbox label="Tôi đồng ý với điều khoản" />
           </AppForm.Item>
+
+          <AppForm.Item name="gender" label="Gender">
+            <AppRadio.Group>
+              <AppRadio radioValue="male" label="Male" />
+              <AppRadio radioValue="female" label="Female" />
+              <AppRadio radioValue="other" label="Other" />
+            </AppRadio.Group>
+          </AppForm.Item>
+
           <AppButton
-            onPress={methods.handleSubmit((data) => {
+            onPress={form.handleSubmit((data) => {
               // handle submit
               console.log('submit', data);
             })}

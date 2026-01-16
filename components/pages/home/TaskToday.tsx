@@ -1,5 +1,7 @@
 import { AppBox } from '@/components/common/AppBox';
 import { AppButton } from '@/components/common/AppButton';
+import { AppCheckbox } from '@/components/common/AppCheckbox';
+import { AppForm } from '@/components/common/AppForm';
 import { AppText } from '@/components/common/AppText';
 import FlexRow from '@/components/common/FlexRow';
 import { INDICATOR_COLOR } from '@/constants/theme';
@@ -13,18 +15,14 @@ type TaskFormData = {
 };
 
 const TaskToday = () => {
-  const { control } = useForm<TaskFormData>({
-    defaultValues: {
-      tasks: [],
-    },
-  });
+  const form = useForm<TaskFormData>();
 
   return (
     <AppBox className="gap-1 bg-yellow-50">
       <FlexRow>
         <View className="flex-row items-center gap-1">
           <Pin size={16} color={INDICATOR_COLOR.primary} />
-          <AppText.Title>Nhiệm vụ hôm nay</AppText.Title>
+          <AppText.Title>Nhiệm vụ hôm nay 123</AppText.Title>
         </View>
 
         <AppButton
@@ -37,16 +35,15 @@ const TaskToday = () => {
         />
       </FlexRow>
 
-      {/* <AppCheckbox.Group
-        name="tasks"
-        control={control}
-        options={[
-          { label: 'Nhiệm vụ 1', value: 'task1' },
-          { label: 'Nhiệm vụ 2', value: 'task2' },
-          { label: 'Nhiệm vụ 3', value: 'task3' },
-        ]}
-        className="gap-2"
-      /> */}
+      <AppForm form={form}>
+        <AppForm.Item name="tasks">
+          <AppCheckbox.Group>
+            <AppCheckbox checkboxValue="music" label="Âm nhạc" />
+            <AppCheckbox checkboxValue="sports" label="Thể thao" />
+            <AppCheckbox checkboxValue="travel" label="Du lịch" />
+          </AppCheckbox.Group>
+        </AppForm.Item>
+      </AppForm>
 
       {/* 
       <AppRadio.Group

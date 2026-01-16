@@ -1,4 +1,5 @@
 import React, { createContext, useContext } from 'react';
+import { View } from 'react-native';
 import { Checkbox, CheckboxIcon, CheckboxIndicator, CheckboxLabel } from '../ui/checkbox';
 import { CheckIcon } from '../ui/icon';
 
@@ -27,6 +28,7 @@ type AppCheckboxGroupProps = {
   error?: string | { message?: string };
   isDisabled?: boolean;
   children: React.ReactNode;
+  className?: string;
 };
 
 function AppCheckboxGroup({
@@ -35,10 +37,20 @@ function AppCheckboxGroup({
   error,
   isDisabled,
   children,
+  className,
 }: AppCheckboxGroupProps) {
+  // Truyền error xuống từng checkbox con
+  const childrenWithError = React.Children.map(children, (child) => {
+    if (!React.isValidElement(child)) return child;
+    // Only pass error if child is AppCheckbox
+    if (child.type === PatchedAppCheckbox) {
+      return React.cloneElement(child as React.ReactElement<any>, { error });
+    }
+    return child;
+  });
   return (
     <CheckboxGroupContext.Provider value={{ value, onChange, error, isDisabled }}>
-      {children}
+      <View className={className}>{childrenWithError}</View>
     </CheckboxGroupContext.Provider>
   );
 }
@@ -56,7 +68,7 @@ function AppCheckboxImpl({
   error,
   indicatorClassName,
 }: AppCheckboxProps) {
-  const hasError = !!(typeof error === 'string' ? error : error?.message);
+  // Không highlight đỏ khi có lỗi
 
   // Boolean mode (single checkbox, no checkboxValue)
   if (checkboxValue === undefined) {
@@ -74,17 +86,13 @@ function AppCheckboxImpl({
       >
         <CheckboxIndicator
           className={
-            hasError
-              ? 'border-red-500'
-              : indicatorClassName ||
-                'border-primary-600 data-[checked=true]:border-primary-600 data-[checked=true]:bg-primary-600'
+            indicatorClassName ||
+            'border-primary-600 data-[checked=true]:border-primary-600 data-[checked=true]:bg-primary-600'
           }
         >
           <CheckboxIcon as={CheckIcon} />
         </CheckboxIndicator>
-        {label && (
-          <CheckboxLabel className={hasError ? 'text-red-500' : undefined}>{label}</CheckboxLabel>
-        )}
+        {label && <CheckboxLabel>{label}</CheckboxLabel>}
       </Checkbox>
     );
   }
@@ -92,6 +100,7 @@ function AppCheckboxImpl({
   // Group mode (array of string)
   const arr: string[] = Array.isArray(value) ? value : [];
   const checked = arr.includes(checkboxValue!);
+  const hasError = !!error && (typeof error === 'string' ? !!error : !!error.message);
   const handleChange = () => {
     if (!onChange) return;
     if (checked) {
@@ -130,13 +139,6 @@ function AppCheckboxImpl({
 function PatchedAppCheckbox(props: AppCheckboxProps) {
   const group = useContext(CheckboxGroupContext);
   const isGroup = !!group && typeof props.checkboxValue === 'string' && Array.isArray(group.value);
-  const hasError = !!(typeof (isGroup ? group.error : props.error) === 'string'
-    ? isGroup
-      ? group.error
-      : props.error
-    : isGroup
-      ? group.error?.message
-      : props.error?.message);
 
   if (isGroup) {
     const arr = group.value || [];
@@ -151,7 +153,7 @@ function PatchedAppCheckbox(props: AppCheckboxProps) {
     };
     return (
       <Checkbox
-        value={props.checkboxValue}
+        value={props.checkboxValue ?? ''}
         isChecked={checked}
         onChange={handleChange}
         isDisabled={group.isDisabled || props.isDisabled}
@@ -159,19 +161,13 @@ function PatchedAppCheckbox(props: AppCheckboxProps) {
       >
         <CheckboxIndicator
           className={
-            hasError
-              ? 'border-red-500'
-              : props.indicatorClassName ||
-                'border-primary-600 data-[checked=true]:border-primary-600 data-[checked=true]:bg-primary-600'
+            props.indicatorClassName ||
+            'border-primary-600 data-[checked=true]:border-primary-600 data-[checked=true]:bg-primary-600'
           }
         >
           <CheckboxIcon as={CheckIcon} />
         </CheckboxIndicator>
-        {props.label && (
-          <CheckboxLabel className={hasError ? 'text-red-500' : undefined}>
-            {props.label}
-          </CheckboxLabel>
-        )}
+        {props.label && <CheckboxLabel>{props.label}</CheckboxLabel>}
       </Checkbox>
     );
   }
