@@ -46,9 +46,40 @@ function AppFormItem({ name, label, rules, children, className }: AppFormItemPro
       {label && <Text className="mb-1 font-semibold text-gray-900">{label}</Text>}
       {React.isValidElement(children)
         ? (() => {
-            // AppCheckbox group support
             const type: any = children.type;
-            // Check for AppCheckbox (single or group)
+            // AppRadio group support
+            if (type && (type.name === 'AppRadio' || type.displayName === 'AppRadio')) {
+              // If it's a group, inject value/onChange to the group
+              if (
+                typeof type.Group === 'function' &&
+                type.Group.displayName === 'AppRadioGroup' &&
+                children.props &&
+                typeof children.props === 'object' &&
+                'children' in children.props
+              ) {
+                return React.cloneElement(children as React.ReactElement<any>, {
+                  value,
+                  onChange,
+                });
+              }
+              // Single radio
+              return React.cloneElement(children as React.ReactElement<any>, {
+                value,
+                onChange,
+              });
+            }
+            // AppRadio.Group (direct usage)
+            if (
+              type &&
+              ((typeof type.displayName === 'string' && type.displayName === 'AppRadioGroup') ||
+                (typeof type.name === 'string' && type.name === 'AppRadioGroup'))
+            ) {
+              return React.cloneElement(children as React.ReactElement<any>, {
+                value,
+                onChange,
+              });
+            }
+            // AppCheckbox group support
             if (type && (type.name === 'AppCheckbox' || type.displayName === 'AppCheckbox')) {
               // If it's a group, inject value/onChange/error to the group
               if (
