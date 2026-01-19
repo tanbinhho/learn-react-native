@@ -36,6 +36,8 @@ export interface AppSelectProps {
   isDisabled?: boolean;
   className?: string;
   size?: 'large' | 'middle' | 'small';
+  allowClear?: boolean;
+  onClear?: () => void;
 }
 
 /* -------------------- Component -------------------- */
@@ -50,6 +52,8 @@ export function AppSelect(props: AppSelectProps) {
     isDisabled,
     className,
     size = 'middle',
+    allowClear = false,
+    onClear,
   } = props;
   const sizeStyles: Record<'large' | 'middle' | 'small', { input: string; text: string }> = {
     large: {
@@ -92,11 +96,12 @@ export function AppSelect(props: AppSelectProps) {
         />
         {/* Nút xóa value dùng icon X của lucide */}
         <View className="flex-row items-center gap-1">
-          {value ? (
+          {allowClear && value ? (
             <Pressable
               onPress={(e) => {
                 e.stopPropagation?.();
-                if (onChange) onChange('');
+                if (onClear) onClear();
+                else if (onChange) onChange('');
               }}
               className="h-6 w-6 items-center justify-center rounded-full bg-gray-200 active:bg-gray-300"
               hitSlop={8}

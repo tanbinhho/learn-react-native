@@ -87,7 +87,7 @@ function AppCheckboxImpl({
         <CheckboxIndicator
           className={
             indicatorClassName ||
-            'border-primary-600 data-[checked=true]:border-primary-600 data-[checked=true]:bg-primary-600'
+            'border-outline-400 data-[checked=true]:border-primary-600 data-[checked=true]:bg-primary-600'
           }
         >
           <CheckboxIcon as={CheckIcon} />
@@ -123,7 +123,7 @@ function AppCheckboxImpl({
           hasError
             ? 'border-red-500'
             : indicatorClassName ||
-              'border-primary-600 data-[checked=true]:border-primary-600 data-[checked=true]:bg-primary-600'
+              'border-outline-400 data-[checked=true]:border-primary-600 data-[checked=true]:bg-primary-600'
         }
       >
         <CheckboxIcon as={CheckIcon} />
@@ -162,7 +162,7 @@ function PatchedAppCheckbox(props: AppCheckboxProps) {
         <CheckboxIndicator
           className={
             props.indicatorClassName ||
-            'border-primary-600 data-[checked=true]:border-primary-600 data-[checked=true]:bg-primary-600'
+            'border-outline-400 data-[checked=true]:border-primary-600 data-[checked=true]:bg-primary-600'
           }
         >
           <CheckboxIcon as={CheckIcon} />

@@ -1,5 +1,6 @@
 import React from 'react';
-import { Pressable, Text, View } from 'react-native';
+import { CircleIcon } from '../ui/icon';
+import { Radio, RadioGroup, RadioIcon, RadioIndicator, RadioLabel } from '../ui/radio';
 
 export type AppRadioProps = {
   value?: string;
@@ -8,6 +9,7 @@ export type AppRadioProps = {
   label?: string;
   isDisabled?: boolean;
   className?: string;
+  size?: 'sm' | 'md' | 'lg';
 };
 
 type AppRadioGroupProps = {
@@ -17,6 +19,7 @@ type AppRadioGroupProps = {
   children: React.ReactNode;
   name?: string;
   className?: string;
+  size?: 'sm' | 'md' | 'lg';
 };
 
 function AppRadioGroup({
@@ -26,65 +29,42 @@ function AppRadioGroup({
   children,
   name,
   className,
+  size = 'md',
 }: AppRadioGroupProps) {
   return (
-    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-      {React.Children.map(children, (child) => {
-        if (!React.isValidElement(child)) return child;
-        return React.cloneElement(child, {
-          value,
-          onChange,
-          isDisabled,
-        });
-      })}
-    </View>
+    <RadioGroup value={value} onChange={onChange} isDisabled={isDisabled} className={className}>
+      {children}
+    </RadioGroup>
   );
 }
 
 AppRadioGroup.displayName = 'AppRadioGroup';
 
-function AppRadio({ value, onChange, radioValue, label, isDisabled, className }: AppRadioProps) {
-  const checked = value === radioValue;
-  const handleChange = () => {
-    if (isDisabled) return;
-    if (onChange && radioValue !== undefined) onChange(radioValue);
-  };
+function AppRadio({
+  value,
+  onChange,
+  radioValue,
+  label,
+  isDisabled,
+  className,
+  size = 'md',
+}: AppRadioProps) {
   return (
-    <Pressable
-      onPress={handleChange}
-      disabled={isDisabled}
-      style={{
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginRight: 16,
-        opacity: isDisabled ? 0.5 : 1,
+    <Radio
+      value={radioValue || ''}
+      isDisabled={isDisabled}
+      onPress={() => {
+        if (isDisabled) return;
+        if (onChange && radioValue !== undefined) onChange(radioValue);
       }}
+      className={className}
+      size={size}
     >
-      <View
-        style={{
-          width: 20,
-          height: 20,
-          borderRadius: 10,
-          borderWidth: 2,
-          borderColor: checked ? '#2563eb' : '#ccc',
-          alignItems: 'center',
-          justifyContent: 'center',
-          backgroundColor: '#fff',
-        }}
-      >
-        {checked ? (
-          <View
-            style={{
-              width: 10,
-              height: 10,
-              borderRadius: 5,
-              backgroundColor: '#2563eb',
-            }}
-          />
-        ) : null}
-      </View>
-      {label && <Text style={{ marginLeft: 8, color: '#222', fontSize: 16 }}>{label}</Text>}
-    </Pressable>
+      <RadioIndicator>
+        <RadioIcon as={CircleIcon} />
+      </RadioIndicator>
+      {label && <RadioLabel>{label}</RadioLabel>}
+    </Radio>
   );
 }
 

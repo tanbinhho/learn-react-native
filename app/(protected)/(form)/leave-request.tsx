@@ -8,15 +8,18 @@ import { AppRadio } from '@/components/common/AppRadio';
 import { AppSelect } from '@/components/common/AppSelect';
 import { AppSwitch } from '@/components/common/AppSwitch';
 import { AppText } from '@/components/common/AppText';
+import { AppUploadFile, FileInfo } from '@/components/common/AppUploadFile';
 import FlexRow from '@/components/common/FlexRow';
 import AppHeader from '@/components/layout/AppHeader';
+import StickyFooter from '@/components/layout/StickyFooter';
 import { TabScreenWrapper } from '@/components/layout/TabScreenWrapper';
 import { ThemedView } from '@/components/themed-view';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useLocalSearchParams } from 'expo-router';
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
+import { InferType } from 'yup';
 
 const DATA = [
   { label: 'Nghỉ có lương / phép năm', value: 2 },
@@ -29,18 +32,25 @@ const loginSchema = yup
   .object({
     reason: yup.string().required('Reason is required'),
     someSwitch: yup.boolean().required('This field is required'),
-    interests: yup.array().of(yup.string()).min(1, 'Chọn ít nhất 1 sở thích'),
-    agree: yup.boolean().oneOf([true], 'Bạn phải đồng ý'),
+    interests: yup
+      .array()
+      .of(yup.string())
+      .min(1, 'Chọn ít nhất 1 sở thích')
+      .required('Chọn ít nhất 1 sở thích'),
+    agree: yup.boolean().oneOf([true], 'Bạn phải đồng ý').required('Bạn phải đồng ý'),
     gender: yup.string().required('Chọn giới tính'),
     birthday: yup.string().required('Chọn ngày sinh'),
     exampleSelect: yup.string().required('Vui lòng chọn một mục'),
   })
   .required();
 
+type LeaveRequestFormData = InferType<typeof loginSchema>;
+
 const LeaveRequest = () => {
   const { id } = useLocalSearchParams();
+  const [file, setFile] = useState<FileInfo | null>(null);
 
-  const form = useForm({
+  const form = useForm<LeaveRequestFormData>({
     mode: 'onTouched',
     resolver: yupResolver(loginSchema),
     defaultValues: {
@@ -56,10 +66,20 @@ const LeaveRequest = () => {
 
   console.log('id', id);
 
+  const handleSubmitForm = (value: LeaveRequestFormData) => {
+    if (!file) {
+      form.setError('file' as any, {
+        type: 'manual',
+        message: 'Vui lòng chọn file',
+      });
+    }
+    console.log('submit', value);
+  };
+
   return (
     <ThemedView className="flex-1">
       <AppHeader title="Tạo đơn xin nghỉ" />
-      <TabScreenWrapper className="gap-5">
+      <TabScreenWrapper isTabScreen={false} className="gap-5">
         <AppBox.Primary>
           {DATA.map((item, index) => (
             <FlexRow key={index} className="py-1">
@@ -119,16 +139,38 @@ const LeaveRequest = () => {
             <AppDatePicker placeholder="Chọn ngày sinh" />
           </AppForm.Item>
 
-          <AppButton
-            onPress={form.handleSubmit((data) => {
-              // handle submit
-              console.log('submit', data);
-            })}
-          >
-            Gửi đơn
-          </AppButton>
+          {/* <AppUploadFile
+            multiple
+            label="Nhiều tài liệu đính kèm"
+            value={files}
+            onChange={(f) => {
+              setFiles(Array.isArray(f) ? f : f ? [f as FileInfo] : null);
+              if (f) console.log('File data:', f);
+            }}
+          /> */}
+          <AppUploadFile
+            required
+            label="Tài liệu đính kèm"
+            value={file}
+            onChange={(f) => {
+              form.clearErrors('file' as any);
+              setFile(f as FileInfo | null);
+              if (f) console.log('File data:', f);
+            }}
+            error={(form.formState.errors as Record<string, any>)?.file?.message}
+          />
         </AppForm>
       </TabScreenWrapper>
+      <StickyFooter>
+        <AppButton
+          color="primary"
+          variant="filled"
+          size="xl"
+          onPress={form.handleSubmit(handleSubmitForm)}
+        >
+          Gửi đơn
+        </AppButton>
+      </StickyFooter>
     </ThemedView>
   );
 };
