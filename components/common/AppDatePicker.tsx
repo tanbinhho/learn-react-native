@@ -1,7 +1,9 @@
+import { formatDate } from '@/utils';
+import { ChevronLeft, ChevronRight, Clock } from 'lucide-react-native';
 import React from 'react';
 import { Pressable, Text, View } from 'react-native';
-import { Calendar, DateObject } from 'react-native-calendars';
-import AppModal from './AppModal';
+import { Calendar } from 'react-native-calendars';
+import { AppBottomSheet } from './AppBottomSheet';
 
 type AppDatePickerSize = 'large' | 'middle' | 'small';
 
@@ -31,6 +33,7 @@ export interface AppDatePickerProps {
   minDate?: string;
   maxDate?: string;
   className?: string;
+  calendarProps?: React.ComponentProps<typeof Calendar>;
 }
 
 export const AppDatePicker: React.FC<AppDatePickerProps> = ({
@@ -44,45 +47,48 @@ export const AppDatePicker: React.FC<AppDatePickerProps> = ({
   maxDate,
   className,
   size = 'middle',
+  calendarProps = {},
 }) => {
   const [show, setShow] = React.useState(false);
   const sizeClass = sizeStyles[size] ?? sizeStyles.middle;
-  // import AppModal nếu chưa có
-  // import { AppModal } from '@/components/common/AppModal';
 
   return (
-    <View className={className}>
-      {label && <Text className="mb-1 font-semibold text-gray-900">{label}</Text>}
-      <Pressable
-        onPress={() => setShow(true)}
-        disabled={disabled}
-        className={`flex-row items-center gap-2 rounded-xl border bg-white text-gray-900 shadow-sm transition-colors ${sizeClass.input} ${error ? 'border-red-500' : 'border-gray-300'} ${disabled ? 'opacity-50' : ''}`}
-      >
-        <Text
-          className={
-            value
-              ? `font-medium text-gray-900 ${sizeClass.text}`
-              : `font-medium text-gray-400 ${sizeClass.text}`
-          }
+    <>
+      <View className={className}>
+        {label && <Text className="mb-1 font-semibold text-gray-900">{label}</Text>}
+        <Pressable
+          onPress={() => setShow(true)}
+          disabled={disabled}
+          className={`flex-row items-center justify-between gap-2 rounded-xl border bg-white text-gray-900 shadow-sm transition-colors ${sizeClass.input} ${error ? 'border-red-500' : 'border-gray-300'} ${disabled ? 'opacity-50' : ''}`}
         >
-          {value ? value : placeholder}
-        </Text>
-      </Pressable>
-      {/* Calendar hiển thị trong modal */}
+          <Text
+            className={
+              value
+                ? `font-medium text-gray-900 ${sizeClass.text}`
+                : `font-medium text-gray-400 ${sizeClass.text}`
+            }
+          >
+            {value ? formatDate(value) : placeholder}
+          </Text>
+          <Clock size={18} color="#9ca3af" />
+        </Pressable>
+      </View>
       {show && (
-        <AppModal open={show} onClose={() => setShow(false)}>
+        <AppBottomSheet open={show} onClose={() => setShow(false)} fitContent footer={null}>
           <Calendar
             current={value}
             minDate={minDate}
             maxDate={maxDate}
-            onDayPress={(day: DateObject) => {
+            onDayPress={(day) => {
               setShow(false);
               if (onChange) onChange(day.dateString);
             }}
             markedDates={value ? { [value]: { selected: true } } : undefined}
+            renderArrow={(direction) => (direction === 'left' ? <ChevronLeft /> : <ChevronRight />)}
+            {...calendarProps}
           />
-        </AppModal>
+        </AppBottomSheet>
       )}
-    </View>
+    </>
   );
 };

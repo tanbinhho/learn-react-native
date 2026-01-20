@@ -11,10 +11,11 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useAppBootstrap } from '@/hooks/useAppBootstrap';
 import { useAppStore } from '@/store/useAppStore';
 import { ToastProvider } from '@gluestack-ui/toast';
+import { PortalProvider } from '@gorhom/portal';
 import * as SplashScreen from 'expo-splash-screen';
 import '../global.css';
-
 SplashScreen.preventAutoHideAsync();
+
 export const unstable_settings = {
   anchor: '(protected)',
 };
@@ -46,18 +47,23 @@ export default function RootLayout() {
         <ThemeProvider value={navigationTheme}>
           <QueryClientProvider client={queryClient}>
             <GluestackUIProvider mode={providerMode}>
-              <ToastProvider>
-                <Suspense fallback={null}>
-                  <ConfirmHost />
-                </Suspense>
-                <Stack>
-                  <Stack.Screen name="(protected)" options={{ headerShown: false }} />
-                  <Stack.Screen name="(public)/login" options={{ headerShown: false }} />
-                  <Stack.Screen name="(public)" options={{ headerShown: false }} />
-                  <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-                  <Stack.Screen name="+not-found" options={{ title: 'Not found' }} />
-                </Stack>
-              </ToastProvider>
+              <PortalProvider>
+                <ToastProvider>
+                  <Suspense fallback={null}>
+                    <ConfirmHost />
+                  </Suspense>
+                  <Stack>
+                    <Stack.Screen name="(protected)" options={{ headerShown: false }} />
+                    <Stack.Screen name="(public)/login" options={{ headerShown: false }} />
+                    <Stack.Screen name="(public)" options={{ headerShown: false }} />
+                    <Stack.Screen
+                      name="modal"
+                      options={{ presentation: 'modal', title: 'Modal' }}
+                    />
+                    <Stack.Screen name="+not-found" options={{ title: 'Not found' }} />
+                  </Stack>
+                </ToastProvider>
+              </PortalProvider>
             </GluestackUIProvider>
           </QueryClientProvider>
           <StatusBar style={statusBarStyle} backgroundColor="transparent" translucent />
