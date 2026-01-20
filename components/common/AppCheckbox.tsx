@@ -2,6 +2,7 @@ import React, { createContext, useContext } from 'react';
 import { View } from 'react-native';
 import { Checkbox, CheckboxIcon, CheckboxIndicator, CheckboxLabel } from '../ui/checkbox';
 import { CheckIcon } from '../ui/icon';
+import { AppTag, AppTagProps } from './AppTag';
 
 export type AppCheckboxProps = {
   value?: boolean | string[];
@@ -174,7 +175,44 @@ function PatchedAppCheckbox(props: AppCheckboxProps) {
   // fallback to real implementation
   return <AppCheckboxImpl {...props} />;
 }
+
+type AppCheckboxTagProps = AppCheckboxProps & {
+  tagProps?: AppTagProps;
+};
+
+function AppCheckboxTag(props: AppCheckboxTagProps) {
+  const group = useContext(CheckboxGroupContext);
+  const isGroup = !!group && typeof props.checkboxValue === 'string' && Array.isArray(group.value);
+
+  if (isGroup) {
+    const arr = group.value || [];
+    const checked = arr.includes(props.checkboxValue!);
+    const handleChange = () => {
+      if (!group.onChange) return;
+      if (checked) {
+        group.onChange(arr.filter((v) => v !== props.checkboxValue));
+      } else {
+        group.onChange([...arr, props.checkboxValue!]);
+      }
+    };
+
+    return (
+      <AppTag
+        variant={checked ? 'filled' : 'outlined'}
+        color={checked ? 'primary' : 'default'}
+        onPress={handleChange}
+        className={props.className}
+        disabled={props.isDisabled}
+        {...props.tagProps}
+      >
+        {props.label}
+      </AppTag>
+    );
+  }
+}
+
 PatchedAppCheckbox.Group = AppCheckboxGroup;
+PatchedAppCheckbox.Tag = AppCheckboxTag;
 PatchedAppCheckbox.displayName = 'AppCheckbox';
 
 export { PatchedAppCheckbox as AppCheckbox };

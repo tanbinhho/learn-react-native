@@ -116,16 +116,13 @@ const tagStyles: Record<TagColor, Record<TagVariant, VariantStyles>> = {
   },
 };
 
-interface AppTagProps {
+export interface AppTagProps {
   children: React.ReactNode;
-
   size?: 'sm' | 'md' | 'lg';
   color?: TagColor;
   shape?: 'rounded' | 'pill';
-
   variant?: TagVariant;
   disabled?: boolean;
-
   onPress?: () => void;
   className?: string;
 }

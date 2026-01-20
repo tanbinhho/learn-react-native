@@ -1,6 +1,7 @@
 import { Input, InputField, InputSlot } from '@/components/ui/input';
 import { Textarea, TextareaInput } from '@/components/ui/textarea';
 import { clsx } from 'clsx';
+import { Eye, EyeOff } from 'lucide-react-native';
 import React from 'react';
 import { Text, TextInputProps, TouchableOpacity } from 'react-native';
 
@@ -32,17 +33,17 @@ type AppInputProps = Omit<
 
 const sizeStyles: Record<AppInputSize, { input: string; field: string; slot: string }> = {
   large: {
-    input: 'min-h-[56px] px-4 text-base',
+    input: 'h-[56px] px-4 text-base',
     field: 'text-base',
     slot: 'text-base',
   },
   middle: {
-    input: 'min-h-[48px] px-4 text-sm',
+    input: 'h-[48px] px-4 text-sm',
     field: 'text-sm',
     slot: 'text-sm',
   },
   small: {
-    input: 'min-h-[40px] px-3 text-sm',
+    input: 'h-[40px] px-3 text-sm',
     field: 'text-sm',
     slot: 'text-sm',
   },
@@ -101,7 +102,7 @@ function BaseAppInput({
 
   return (
     <Input className={inputClassName}>
-      {prefix && <InputSlot className={clsx('pl-3', slotClassName)}>{prefix}</InputSlot>}
+      {prefix && <InputSlot className={clsx(slotClassName)}>{prefix}</InputSlot>}
       <InputField
         value={value}
         onChangeText={onChangeText}
@@ -111,9 +112,7 @@ function BaseAppInput({
         className={fieldClassName}
         {...inputProps}
       />
-      {resolvedSuffix && (
-        <InputSlot className={clsx('pr-3', slotClassName)}>{resolvedSuffix}</InputSlot>
-      )}
+      {resolvedSuffix && <InputSlot className={clsx(slotClassName)}>{resolvedSuffix}</InputSlot>}
     </Input>
   );
 }
@@ -125,12 +124,7 @@ type PasswordInputProps = Omit<AppInputProps, 'suffix' | 'secureTextEntry' | 'pa
 function PasswordAppInput({ toggleIcon, ...props }: PasswordInputProps) {
   const [visible, setVisible] = React.useState(false);
   const iconRenderer =
-    toggleIcon ??
-    ((isVisible: boolean) => (
-      <Text style={{ color: '#cfe3ff', fontSize: 12, fontWeight: '600' }}>
-        {isVisible ? 'Hide' : 'Show'}
-      </Text>
-    ));
+    toggleIcon ?? ((isVisible: boolean) => (isVisible ? <Eye size={20} /> : <EyeOff size={20} />));
   return (
     <BaseAppInput
       {...props}
@@ -185,7 +179,6 @@ function TextareaAppInput({
         placeholder={placeholder}
         multiline={resolvedMultiline}
         className={fieldClassName}
-        // padding dọc 0, padding ngang inherit từ Textarea
         {...inputProps}
       />
     </Textarea>

@@ -6,6 +6,7 @@ import AppInput from '@/components/common/AppInput';
 import { AppSelect } from '@/components/common/AppSelect';
 import { AppText } from '@/components/common/AppText';
 import { AppUploadFile, FileInfo } from '@/components/common/AppUploadFile';
+import AppUploadImages from '@/components/common/AppUploadImages';
 import FlexRow from '@/components/common/FlexRow';
 import AppHeader from '@/components/layout/AppHeader';
 import StickyFooter from '@/components/layout/StickyFooter';
@@ -48,7 +49,7 @@ const LeaveRequest = () => {
   const [file, setFile] = useState<FileInfo | null>(null);
 
   const form = useForm<LeaveRequestFormData>({
-    mode: 'onTouched',
+    mode: 'onChange',
     resolver: yupResolver(loginSchema),
     defaultValues: {
       reason: '',
@@ -86,15 +87,15 @@ const LeaveRequest = () => {
           ))}
         </AppBox.Primary>
         <AppForm form={form}>
-          <AppForm.Item
-            name="time"
-            label="Thời gian nghỉ"
-            rules={{ required: 'Vui lòng chọn thời gian nghỉ' }}
-          >
+          <AppForm.Item name="time" label="Thời gian nghỉ" required>
+            <AppInput size="large" placeholder="Chọn thời gian nghỉ" />
+          </AppForm.Item>
+
+          <AppForm.Item name="time" label="Thời gian nghỉ" required>
             <AppDatePicker placeholder="Chọn thời gian nghỉ" />
           </AppForm.Item>
 
-          <AppForm.Item name="type" label="Loại nghỉ">
+          <AppForm.Item name="type" label="Loại nghỉ" required>
             <AppSelect
               options={[
                 { label: 'Nghỉ có lương / phép năm', value: '1' },
@@ -106,7 +107,7 @@ const LeaveRequest = () => {
             />
           </AppForm.Item>
 
-          <AppForm.Item name="reason" label="Lý do nghỉ">
+          <AppForm.Item name="reason" label="Lý do nghỉ" required>
             <AppInput.Textarea
               placeholder="Nhập lý do nghỉ"
               autoCapitalize="none"
@@ -126,11 +127,31 @@ const LeaveRequest = () => {
             error={(form.formState.errors as Record<string, any>)?.file?.message}
           />
 
-          {/* <AppForm.Item name="interests" label="Sở thích">
+          <AppUploadImages
+            value={[]}
+            onChange={(images) => {
+              console.log('Selected images:', images);
+            }}
+            max={5}
+            label="Ảnh đính kèm"
+            error={undefined}
+            disabled={false}
+          />
+
+          {/* 
+          <AppForm.Item name="interests" label="Sở thích">
             <AppCheckbox.Group>
               <AppCheckbox checkboxValue="music" label="Âm nhạc" />
               <AppCheckbox checkboxValue="sports" label="Thể thao" />
               <AppCheckbox checkboxValue="travel" label="Du lịch" />
+            </AppCheckbox.Group>
+          </AppForm.Item>
+
+          <AppForm.Item name="interests" label="Sở thích">
+            <AppCheckbox.Group className="flex-row gap-2.5">
+              <AppCheckbox.Tag checkboxValue="music" label="Âm nhạc" />
+              <AppCheckbox.Tag checkboxValue="sports" label="Thể thao" />
+              <AppCheckbox.Tag checkboxValue="travel" label="Du lịch" />
             </AppCheckbox.Group>
           </AppForm.Item>
 

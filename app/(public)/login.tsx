@@ -1,27 +1,18 @@
 import { AppButton } from '@/components/common/AppButton';
-import { AppCheckbox } from '@/components/common/AppCheckbox';
+import { AppForm } from '@/components/common/AppForm';
 import AppInput from '@/components/common/AppInput';
+import { AppText } from '@/components/common/AppText';
 import { SocialButtons } from '@/components/ui/social-buttons';
 import { useLogin } from '@/hooks/auth/useLogin';
 import { useAppToast } from '@/hooks/useAppToast';
 import { useAuthStore } from '@/store/useAuthStore';
-import { Ionicons } from '@expo/vector-icons';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import { KeyRound, User } from 'lucide-react-native';
+import React, { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import {
-  Animated,
-  Image,
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import { Animated, KeyboardAvoidingView, Platform, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as yup from 'yup';
 
@@ -41,19 +32,13 @@ export default function LoginScreen() {
   }, [hydrate]);
 
   const { redirect } = useLocalSearchParams<{ redirect?: string }>();
-  const {
-    control,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-    // setValue,
-    // watch,
-  } = useForm({
+  const form = useForm({
     defaultValues: { username: 'mor_2314', password: '83r5^_' },
     mode: 'onTouched',
     resolver: yupResolver(loginSchema),
   });
   const [rememberMe, setRememberMe] = useState(false);
-  const fadeAnim = React.useRef(new Animated.Value(0)).current;
+  const fadeAnim = useRef(new Animated.Value(0)).current;
 
   const loginMutation = useLogin({
     onSuccess: () => {
@@ -88,7 +73,7 @@ export default function LoginScreen() {
 
   return (
     <LinearGradient
-      colors={['#09c0ba', '#0891b2', '#0e7490']} // primary teal gradient
+      colors={['#09c0ba', '#0891b2', '#0e7490']}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
       className="flex-1"
@@ -98,90 +83,55 @@ export default function LoginScreen() {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         keyboardVerticalOffset={0}
       >
-        <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
+        <SafeAreaView className="flex-1" edges={['top', 'bottom']}>
           <ScrollView
             contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
           >
-            <View style={styles.formBg}>
-              <View style={styles.logoWrap}>
-                <View style={styles.logoCircle}>
-                  <Image
-                    // source={require("@/assets/images/logo.png")}
-                    style={styles.logo}
-                    resizeMode="contain"
-                  />
-                </View>
+            <View className="w-full gap-5 rounded-2xl p-5">
+              <View className="items-center">
+                <AppText.Heading className="text-white">Chào mừng trở lại!</AppText.Heading>
+                <AppText.Title className="text-white">Đăng nhập để tiếp tục</AppText.Title>
               </View>
-              <Text style={styles.title}>Chào mừng trở lại!</Text>
-              <Text style={styles.subtitle}>Đăng nhập để tiếp tục 🚀</Text>
-              <View style={styles.inputGroup}>
-                <View style={styles.field}>
-                  <Text style={styles.inputLabel}>Tên đăng nhập</Text>
+              <AppForm form={form}>
+                <AppForm.Item name="username" label="Tên đăng nhập" classNameLabel="text-white">
                   <AppInput
-                    name="username"
-                    control={control}
                     placeholder="mor_2314"
                     autoCapitalize="none"
                     autoCorrect={false}
-                    error={errors.username}
-                    size="large"
-                    prefix={<Ionicons name="person-outline" size={20} color="#cfe3ff" />}
+                    prefix={<User size={20} />}
                   />
-                </View>
-
-                <View style={styles.field}>
-                  <Text style={styles.inputLabel}>Mật khẩu</Text>
-                  <AppInput.Password
-                    name="password"
-                    control={control}
-                    placeholder="83r5^_"
-                    error={errors.password}
-                    size="large"
-                    prefix={<Ionicons name="lock-closed-outline" size={20} color="#cfe3ff" />}
-                    toggleIcon={(visible) => (
-                      <Ionicons
-                        name={visible ? 'eye-off-outline' : 'eye-outline'}
-                        size={20}
-                        color="#cfe3ff"
-                      />
-                    )}
-                  />
-                </View>
-              </View>
-
-              <View style={styles.rememberRow}>
-                <AppCheckbox
-                  value={rememberMe}
-                  onChange={setRememberMe}
-                  label="Ghi nhớ đăng nhập"
-                />
-                <Pressable
-                  style={styles.forgot}
+                </AppForm.Item>
+                <AppForm.Item name="password" label="Mật khẩu" classNameLabel="text-white">
+                  <AppInput.Password placeholder="83r5^_" prefix={<KeyRound size={20} />} />
+                </AppForm.Item>
+                <AppText
+                  variant="label"
+                  className="text-white underline"
                   onPress={() => toast.info('Tính năng đang phát triển')}
                 >
-                  <Text style={styles.forgotText}>Quên mật khẩu?</Text>
-                </Pressable>
+                  Quên mật khẩu?
+                </AppText>
+
+                <AppButton
+                  variant="filled"
+                  color="primary"
+                  title={loginMutation.isPending ? 'Đang đăng nhập...' : 'Đăng nhập'}
+                  onPress={form.handleSubmit(onSubmit)}
+                  disabled={loginMutation.isPending}
+                  loading={loginMutation.isPending}
+                  size="xl"
+                  block
+                />
+              </AppForm>
+
+              <View className="my-4 w-full flex-row items-center gap-2">
+                <View className="h-[1.5px] flex-1 rounded bg-[#cfe3ff]/20" />
+                <Text className="mx-0.5 text-[15px] font-bold text-[#d7e9ff]">hoặc</Text>
+                <View className="h-[1.5px] flex-1 rounded bg-[#cfe3ff]/20" />
               </View>
-
-              <AppButton
-                title={loginMutation.isPending || isSubmitting ? 'Đang đăng nhập...' : 'Đăng nhập'}
-                onPress={handleSubmit(onSubmit)}
-                disabled={loginMutation.isPending || isSubmitting}
-                loading={loginMutation.isPending || isSubmitting}
-                size="lg"
-                block
-                suffix={<Ionicons name="arrow-forward" size={20} color="#ffffff" />}
-              />
-
-              <View style={styles.dividerRow}>
-                <View style={styles.divider} />
-                <Text style={styles.or}>hoặc</Text>
-                <View style={styles.divider} />
-              </View>
-
-              <View style={styles.socialRow}>
+              <View className="mb-1 flex-row justify-center gap-3">
                 <SocialButtons onGoogle={() => {}} onFacebook={() => {}} onApple={() => {}} />
               </View>
             </View>
@@ -191,123 +141,3 @@ export default function LoginScreen() {
     </LinearGradient>
   );
 }
-
-const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-  },
-  formBg: {
-    width: '100%',
-    maxWidth: 420,
-    alignSelf: 'center',
-    padding: 18,
-    backgroundColor: 'transparent', // no card
-    borderRadius: 12,
-    gap: 18,
-  },
-  logoWrap: {
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  logoCircle: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
-    backgroundColor: 'rgba(255, 255, 255, 0.95)',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 2,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 3,
-  },
-  logo: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-  },
-  title: {
-    fontSize: 30,
-    fontWeight: '800',
-    color: '#fff',
-    textAlign: 'center',
-    letterSpacing: 0.6,
-  },
-  subtitle: {
-    fontSize: 15,
-    color: '#cfe3ff',
-    textAlign: 'center',
-    marginBottom: 8,
-    fontWeight: '500',
-  },
-  inputGroup: {
-    gap: 12,
-    marginBottom: 2,
-  },
-  field: {
-    gap: 6,
-  },
-  inputLabel: {
-    fontSize: 14,
-    color: '#e6eefc',
-    fontWeight: '600',
-    letterSpacing: 0.2,
-  },
-  inputIconWrap: {
-    justifyContent: 'center',
-  },
-  rememberRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 6,
-    gap: 8,
-  },
-  checkbox: {
-    width: 24,
-    height: 24,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  rememberText: {
-    color: '#cfe3ff',
-    fontWeight: '500',
-    fontSize: 15,
-    marginRight: 8,
-  },
-  forgot: {
-    marginLeft: 'auto',
-    padding: 4,
-  },
-  forgotText: {
-    color: '#cfe3ff',
-    fontWeight: '600',
-    fontSize: 14,
-  },
-  dividerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    marginVertical: 18,
-    width: '100%',
-  },
-  divider: {
-    flex: 1,
-    height: 1.5,
-    backgroundColor: 'rgba(207,227,255,0.18)',
-    borderRadius: 1,
-  },
-  or: {
-    color: '#d7e9ff',
-    fontWeight: '700',
-    fontSize: 15,
-    marginHorizontal: 2,
-  },
-  socialRow: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    gap: 12,
-    marginBottom: 2,
-  },
-});

@@ -1,13 +1,8 @@
 import { cn } from '@/utils/cn';
 import React from 'react';
-import {
-  FormProvider,
-  RegisterOptions,
-  useController,
-  useFormContext,
-  UseFormReturn,
-} from 'react-hook-form';
+import { FormProvider, useController, useFormContext, UseFormReturn } from 'react-hook-form';
 import { Text, View } from 'react-native';
+import { AppText } from './AppText';
 
 // -------------------- AppForm Props --------------------
 export interface AppFormProps {
@@ -19,7 +14,7 @@ export interface AppFormProps {
 function AppForm({ children, className, form }: AppFormProps) {
   return (
     <FormProvider {...form}>
-      <View className={cn(className)}>{children}</View>
+      <View className={cn('gap-2.5', className)}>{children}</View>
     </FormProvider>
   );
 }
@@ -29,21 +24,34 @@ function AppForm({ children, className, form }: AppFormProps) {
 export interface AppFormItemProps {
   name: string;
   label?: string;
-  rules?: RegisterOptions;
   children: React.ReactNode;
   className?: string;
+  classNameLabel?: string;
+  required?: boolean;
 }
 
-function AppFormItem({ name, label, rules, children, className }: AppFormItemProps) {
+function AppFormItem({
+  name,
+  label,
+  children,
+  className,
+  classNameLabel,
+  required,
+}: AppFormItemProps) {
   const { control } = useFormContext();
   const {
     field: { value, onChange, onBlur },
     fieldState: { error },
-  } = useController({ name, control, rules });
+  } = useController({ name, control });
 
   return (
-    <View className={cn('mb-4', className)}>
-      {label && <Text className="mb-1 font-semibold text-gray-900">{label}</Text>}
+    <View className={cn(className)}>
+      {label && (
+        <AppText.Label className={classNameLabel}>
+          {label}
+          {required ? <AppText.Error> *</AppText.Error> : ''}
+        </AppText.Label>
+      )}
       {React.isValidElement(children)
         ? (() => {
             const type: any = children.type;

@@ -6,7 +6,7 @@ import { Text as RNText, TextProps } from 'react-native';
    Types
 ======================= */
 
-type TextVariant = 'title' | 'body' | 'caption' | 'label' | 'error';
+type TextVariant = 'heading' | 'title' | 'body' | 'caption' | 'label' | 'error';
 type TextColor =
   | 'default'
   | 'muted'
@@ -32,6 +32,7 @@ export interface AppTextProps extends TextProps {
 ======================= */
 
 const variantMap: Record<TextVariant, string> = {
+  heading: 'text-3xl leading-10',
   title: 'text-xl leading-7',
   body: 'text-sm leading-5',
   caption: 'text-xs leading-4',
@@ -96,6 +97,8 @@ function BaseText({
    Preset Components
 ======================= */
 
+const Heading = (props: AppTextProps) => <BaseText variant="heading" weight="bold" {...props} />;
+
 const Title = (props: AppTextProps) => <BaseText variant="title" weight="bold" {...props} />;
 
 const Caption = (props: AppTextProps) => <BaseText variant="caption" color="muted" {...props} />;
@@ -109,6 +112,7 @@ const Error = (props: AppTextProps) => <BaseText variant="error" color="error" {
 ======================= */
 
 export const AppText = Object.assign(BaseText, {
+  Heading,
   Title,
   Caption,
   Label,
