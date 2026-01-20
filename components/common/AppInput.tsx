@@ -170,7 +170,7 @@ function TextareaAppInput({
     className,
   );
   const fieldClassName = clsx(
-    'flex-1 text-gray-900 placeholder:text-gray-400 font-medium',
+    'flex-1 text-gray-900 placeholder:text-gray-400 font-medium px-0 py-3',
     sizeClass.field,
     inputFieldClassName,
   );
@@ -185,6 +185,7 @@ function TextareaAppInput({
         placeholder={placeholder}
         multiline={resolvedMultiline}
         className={fieldClassName}
+        // padding dọc 0, padding ngang inherit từ Textarea
         {...inputProps}
       />
     </Textarea>

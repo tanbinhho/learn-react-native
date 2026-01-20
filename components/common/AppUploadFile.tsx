@@ -78,8 +78,8 @@ export const AppUploadFile: React.FC<AppUploadFileProps> = ({
       >
         <View
           className={cn(
-            'w-full items-center justify-center rounded-xl border border-dashed bg-white px-4 py-3 dark:bg-neutral-900',
-            error ? 'border-red-500' : 'border-gray-300',
+            'w-full items-center justify-center rounded-xl border border-dashed bg-white px-4 py-3',
+            error ? 'border-red-500' : 'border-primary-500',
           )}
         >
           <CloudUpload size={36} color={INDICATOR_COLOR.primary} />

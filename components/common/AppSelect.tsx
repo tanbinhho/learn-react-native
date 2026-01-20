@@ -74,7 +74,7 @@ export function AppSelect(props: AppSelectProps) {
   return (
     <Select
       className={cn(
-        ' rounded-xl border bg-white text-gray-900 shadow-sm transition-colors',
+        'rounded-xl border bg-white text-gray-900 shadow-sm transition-colors',
         sizeClass.input,
         hasError ? 'border-red-500' : 'border-gray-300',
         className,
@@ -83,7 +83,10 @@ export function AppSelect(props: AppSelectProps) {
       selectedValue={value}
       onValueChange={onChange}
     >
-      <SelectTrigger className="border- flex-1 flex-row items-center justify-between gap-2">
+      <SelectTrigger
+        className="flex-1 flex-row items-center justify-between gap-2 border-0"
+        style={{ elevation: 0 }}
+      >
         <SelectInput
           placeholder={placeholder}
           value={options.find((opt) => opt.value === value)?.label || ''}

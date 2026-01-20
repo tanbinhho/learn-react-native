@@ -1,12 +1,9 @@
 import { AppBox } from '@/components/common/AppBox';
 import { AppButton } from '@/components/common/AppButton';
-import { AppCheckbox } from '@/components/common/AppCheckbox';
 import { AppDatePicker } from '@/components/common/AppDatePicker';
 import { AppForm } from '@/components/common/AppForm';
 import AppInput from '@/components/common/AppInput';
-import { AppRadio } from '@/components/common/AppRadio';
 import { AppSelect } from '@/components/common/AppSelect';
-import { AppSwitch } from '@/components/common/AppSwitch';
 import { AppText } from '@/components/common/AppText';
 import { AppUploadFile, FileInfo } from '@/components/common/AppUploadFile';
 import FlexRow from '@/components/common/FlexRow';
@@ -30,17 +27,17 @@ const DATA = [
 
 const loginSchema = yup
   .object({
-    reason: yup.string().required('Reason is required'),
-    someSwitch: yup.boolean().required('This field is required'),
-    interests: yup
-      .array()
-      .of(yup.string())
-      .min(1, 'Chọn ít nhất 1 sở thích')
-      .required('Chọn ít nhất 1 sở thích'),
-    agree: yup.boolean().oneOf([true], 'Bạn phải đồng ý').required('Bạn phải đồng ý'),
-    gender: yup.string().required('Chọn giới tính'),
-    birthday: yup.string().required('Chọn ngày sinh'),
-    exampleSelect: yup.string().required('Vui lòng chọn một mục'),
+    reason: yup.string().required('Vui lòng điền lý do nghỉ'),
+    // someSwitch: yup.boolean().required('This field is required'),
+    // interests: yup
+    //   .array()
+    //   .of(yup.string())
+    //   .min(1, 'Chọn ít nhất 1 sở thích')
+    //   .required('Chọn ít nhất 1 sở thích'),
+    // agree: yup.boolean().oneOf([true], 'Bạn phải đồng ý').required('Bạn phải đồng ý'),
+    // gender: yup.string().required('Chọn giới tính'),
+    time: yup.string().required('Vui lòng chọn thời gian nghỉ'),
+    type: yup.string().required('Vui lòng chọn loại nghỉ'),
   })
   .required();
 
@@ -55,12 +52,12 @@ const LeaveRequest = () => {
     resolver: yupResolver(loginSchema),
     defaultValues: {
       reason: '',
-      someSwitch: false,
-      interests: [],
-      agree: false,
-      gender: '',
-      birthday: '',
-      exampleSelect: '',
+      time: '',
+      type: '',
+      // someSwitch: false,
+      // interests: [],
+      // agree: false,
+      // gender: '',
     },
   });
 
@@ -89,65 +86,34 @@ const LeaveRequest = () => {
           ))}
         </AppBox.Primary>
         <AppForm form={form}>
-          <AppForm.Item name="reason" label="Lý do nghỉ">
-            <AppInput placeholder="Nhập lý do nghỉ" autoCapitalize="none" autoCorrect={false} />
+          <AppForm.Item
+            name="time"
+            label="Thời gian nghỉ"
+            rules={{ required: 'Vui lòng chọn thời gian nghỉ' }}
+          >
+            <AppDatePicker placeholder="Chọn thời gian nghỉ" />
           </AppForm.Item>
 
-          <AppForm.Item name="exampleSelect" label="Ví dụ chọn">
+          <AppForm.Item name="type" label="Loại nghỉ">
             <AppSelect
               options={[
-                { label: 'Option 1', value: '1' },
-                { label: 'Option 2', value: '2' },
-                { label: 'Option 3', value: '3' },
+                { label: 'Nghỉ có lương / phép năm', value: '1' },
+                { label: 'Nghỉ không lương', value: '2' },
+                { label: 'Khác', value: '3' },
               ]}
-              placeholder="Chọn một mục"
+              placeholder="Chọn loại nghỉ"
               className="w-full"
             />
           </AppForm.Item>
 
-          <AppForm.Item name="someSwitch" label="Lý do nghỉ">
-            <AppSwitch />
+          <AppForm.Item name="reason" label="Lý do nghỉ">
+            <AppInput.Textarea
+              placeholder="Nhập lý do nghỉ"
+              autoCapitalize="none"
+              autoCorrect={false}
+            />
           </AppForm.Item>
 
-          {/* Checkbox group: interests (array of string) */}
-          <AppForm.Item name="interests" label="Sở thích">
-            <AppCheckbox.Group>
-              <AppCheckbox checkboxValue="music" label="Âm nhạc" />
-              <AppCheckbox checkboxValue="sports" label="Thể thao" />
-              <AppCheckbox checkboxValue="travel" label="Du lịch" />
-            </AppCheckbox.Group>
-          </AppForm.Item>
-
-          {/* Single checkbox: agree (boolean) */}
-          <AppForm.Item name="agree">
-            <AppCheckbox label="Tôi đồng ý với điều khoản" />
-          </AppForm.Item>
-
-          <AppForm.Item name="gender" label="Gender">
-            <AppRadio.Group>
-              <AppRadio radioValue="male" label="Male" />
-              <AppRadio radioValue="female" label="Female" />
-              <AppRadio radioValue="other" label="Other" />
-            </AppRadio.Group>
-          </AppForm.Item>
-
-          <AppForm.Item
-            name="birthday"
-            label="Ngày sinh"
-            rules={{ required: 'Vui lòng chọn ngày sinh' }}
-          >
-            <AppDatePicker placeholder="Chọn ngày sinh" />
-          </AppForm.Item>
-
-          {/* <AppUploadFile
-            multiple
-            label="Nhiều tài liệu đính kèm"
-            value={files}
-            onChange={(f) => {
-              setFiles(Array.isArray(f) ? f : f ? [f as FileInfo] : null);
-              if (f) console.log('File data:', f);
-            }}
-          /> */}
           <AppUploadFile
             required
             label="Tài liệu đính kèm"
@@ -159,11 +125,45 @@ const LeaveRequest = () => {
             }}
             error={(form.formState.errors as Record<string, any>)?.file?.message}
           />
+
+          {/* <AppForm.Item name="interests" label="Sở thích">
+            <AppCheckbox.Group>
+              <AppCheckbox checkboxValue="music" label="Âm nhạc" />
+              <AppCheckbox checkboxValue="sports" label="Thể thao" />
+              <AppCheckbox checkboxValue="travel" label="Du lịch" />
+            </AppCheckbox.Group>
+          </AppForm.Item>
+
+          <AppForm.Item name="someSwitch" label="Lý do nghỉ">
+            <AppSwitch />
+          </AppForm.Item>
+
+          <AppForm.Item name="agree">
+            <AppCheckbox label="Tôi đồng ý với điều khoản" />
+          </AppForm.Item>
+
+          <AppForm.Item name="gender" label="Gender">
+            <AppRadio.Group>
+              <AppRadio radioValue="male" label="Male" />
+              <AppRadio radioValue="female" label="Female" />
+              <AppRadio radioValue="other" label="Other" />
+            </AppRadio.Group>
+          </AppForm.Item> */}
+
+          {/* <AppUploadFile
+            multiple
+            label="Nhiều tài liệu đính kèm"
+            value={files}
+            onChange={(f) => {
+              setFiles(Array.isArray(f) ? f : f ? [f as FileInfo] : null);
+              if (f) console.log('File data:', f);
+            }}
+          /> */}
         </AppForm>
       </TabScreenWrapper>
       <StickyFooter>
         <AppButton
-          color="primary"
+          color="info"
           variant="filled"
           size="xl"
           onPress={form.handleSubmit(handleSubmitForm)}
