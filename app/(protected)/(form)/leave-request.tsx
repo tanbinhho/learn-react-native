@@ -6,7 +6,7 @@ import AppInput from '@/components/common/AppInput';
 import { AppSelect } from '@/components/common/AppSelect';
 import { AppText } from '@/components/common/AppText';
 import { AppUploadFile, FileInfo } from '@/components/common/AppUploadFile';
-import AppUploadImages from '@/components/common/AppUploadImages';
+import { AppUploadImages } from '@/components/common/AppUploadImages';
 import FlexRow from '@/components/common/FlexRow';
 import AppHeader from '@/components/layout/AppHeader';
 import StickyFooter from '@/components/layout/StickyFooter';
@@ -29,16 +29,13 @@ const DATA = [
 const loginSchema = yup
   .object({
     reason: yup.string().required('Vui lòng điền lý do nghỉ'),
-    // someSwitch: yup.boolean().required('This field is required'),
-    // interests: yup
-    //   .array()
-    //   .of(yup.string())
-    //   .min(1, 'Chọn ít nhất 1 sở thích')
-    //   .required('Chọn ít nhất 1 sở thích'),
-    // agree: yup.boolean().oneOf([true], 'Bạn phải đồng ý').required('Bạn phải đồng ý'),
-    // gender: yup.string().required('Chọn giới tính'),
     time: yup.string().required('Vui lòng chọn thời gian nghỉ'),
     type: yup.string().required('Vui lòng chọn loại nghỉ'),
+    images: yup
+      .array()
+      .of(yup.string())
+      .required('Vui lòng chọn hình ảnh')
+      .min(1, 'Vui lòng chọn ít nhất 1 hình ảnh'),
   })
   .required();
 
@@ -55,6 +52,7 @@ const LeaveRequest = () => {
       reason: '',
       time: '',
       type: '',
+      images: [],
       // someSwitch: false,
       // interests: [],
       // agree: false,
@@ -87,10 +85,6 @@ const LeaveRequest = () => {
           ))}
         </AppBox.Primary>
         <AppForm form={form}>
-          <AppForm.Item name="time" label="Thời gian nghỉ" required>
-            <AppInput size="large" placeholder="Chọn thời gian nghỉ" />
-          </AppForm.Item>
-
           <AppForm.Item name="time" label="Thời gian nghỉ" required>
             <AppDatePicker placeholder="Chọn thời gian nghỉ" />
           </AppForm.Item>
@@ -127,16 +121,9 @@ const LeaveRequest = () => {
             error={(form.formState.errors as Record<string, any>)?.file?.message}
           />
 
-          <AppUploadImages
-            value={[]}
-            onChange={(images) => {
-              console.log('Selected images:', images);
-            }}
-            max={5}
-            label="Ảnh đính kèm"
-            error={undefined}
-            disabled={false}
-          />
+          <AppForm.Item name="images" label="Hình ảnh" required>
+            <AppUploadImages />
+          </AppForm.Item>
 
           {/* 
           <AppForm.Item name="interests" label="Sở thích">

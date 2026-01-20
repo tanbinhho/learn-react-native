@@ -47,7 +47,7 @@ function AppFormItem({
   return (
     <View className={cn(className)}>
       {label && (
-        <AppText.Label className={classNameLabel}>
+        <AppText.Label className={cn('mb-1', classNameLabel)}>
           {label}
           {required ? <AppText.Error> *</AppText.Error> : ''}
         </AppText.Label>
@@ -141,6 +141,17 @@ function AppFormItem({
             }
             // AppSelect
             if (type && (type.name === 'AppSelect' || type.displayName === 'AppSelect')) {
+              return React.cloneElement(children as React.ReactElement<any>, {
+                value,
+                onChange,
+                error: error?.message,
+              });
+            }
+            // AppUploadImages (support both direct and wrapped usage)
+            if (
+              type &&
+              (type.name === 'AppUploadImages' || type.displayName === 'AppUploadImages')
+            ) {
               return React.cloneElement(children as React.ReactElement<any>, {
                 value,
                 onChange,

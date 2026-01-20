@@ -1,25 +1,31 @@
+import { INDICATOR_COLOR } from '@/constants/theme';
+import { useAppActionSheet } from '@/hooks/useAppActionSheet';
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
+import { Images, Trash2 } from 'lucide-react-native';
 import React, { useCallback } from 'react';
-import { Alert, FlatList, Image, Pressable, Text, View } from 'react-native';
+import { Image, Pressable, View } from 'react-native';
+import { AppActionSheet } from './AppActionSheet';
 
 export interface AppUploadImagesProps {
-  value?: string[]; // Array of image URIs
+  value?: string[];
   onChange?: (images: string[]) => void;
   max?: number;
-  label?: string;
-  error?: string;
   disabled?: boolean;
+  error?: string;
+  [key: string]: any; // allow extra props for form integration
 }
 
 export const AppUploadImages: React.FC<AppUploadImagesProps> = ({
   value = [],
   onChange,
   max = 5,
-  label,
-  error,
   disabled,
+  error,
+  ...props
 }) => {
+  const { sheetProps, present } = useAppActionSheet();
+
   const pickImage = useCallback(async () => {
     if (disabled) return;
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -46,62 +52,69 @@ export const AppUploadImages: React.FC<AppUploadImagesProps> = ({
     }
   }, [onChange, value, disabled]);
 
-  const removeImage = (uri: string) => {
-    Alert.alert('Remove Image', 'Do you want to remove this image?', [
-      { text: 'Cancel', style: 'cancel' },
-      {
-        text: 'Remove',
-        style: 'destructive',
-        onPress: () => onChange?.(value.filter((v) => v !== uri)),
-      },
-    ]);
+  const showActionSheet = () => {
+    if (disabled) return;
+
+    present({
+      actions: [
+        {
+          label: 'Chọn từ thư viện',
+          icon: <Ionicons name="images" size={22} color="#0891b2" />,
+          onPress: pickImage,
+        },
+        {
+          label: 'Chụp ảnh',
+          icon: <Ionicons name="camera" size={22} color="#0891b2" />,
+          onPress: takePhoto,
+        },
+      ],
+    });
   };
+
+  const removeImage = (uri: string) => {
+    onChange?.(value.filter((v) => v !== uri));
+  };
+
+  const isDisabled = disabled || value.length >= max;
 
   return (
     <View>
-      {label && <Text className="mb-1 font-semibold text-gray-900">{label}</Text>}
-      <FlatList
-        data={value}
-        horizontal
-        keyExtractor={(uri) => uri}
-        renderItem={({ item }) => (
-          <View className="relative mr-2">
-            <Image source={{ uri: item }} style={{ width: 80, height: 80, borderRadius: 8 }} />
-            {!disabled && (
-              <Pressable
-                className="absolute right-1 top-1 rounded-full bg-white p-1"
-                onPress={() => removeImage(item)}
-              >
-                <Ionicons name="close" size={18} color="#f00" />
-              </Pressable>
-            )}
-          </View>
-        )}
-        ListFooterComponent={
-          value.length < max && !disabled ? (
-            <View className="flex-row">
-              <Pressable
-                className="mr-2 h-20 w-20 items-center justify-center rounded-lg border border-gray-300 bg-gray-50"
-                onPress={pickImage}
-              >
-                <Ionicons name="image" size={28} color="#888" />
-                <Text className="mt-1 text-xs">Gallery</Text>
-              </Pressable>
-              <Pressable
-                className="h-20 w-20 items-center justify-center rounded-lg border border-gray-300 bg-gray-50"
-                onPress={takePhoto}
-              >
-                <Ionicons name="camera" size={28} color="#888" />
-                <Text className="mt-1 text-xs">Camera</Text>
-              </Pressable>
+      <View className="flex-row flex-wrap gap-2">
+        <Pressable
+          className={`h-24 w-24 flex-row items-center justify-center rounded-lg border border-dashed ${
+            error ? 'border-red-500' : isDisabled ? 'border-gray-300' : 'border-primary-500'
+          }`}
+          onPress={showActionSheet}
+          disabled={isDisabled}
+          aria-invalid={!!error}
+          {...props}
+        >
+          <Images
+            size={30}
+            color={error ? INDICATOR_COLOR.error : isDisabled ? '#d1d5db' : INDICATOR_COLOR.primary}
+          />
+        </Pressable>
+        {Array.isArray(value) &&
+          value.length > 0 &&
+          value.map((item) => (
+            <View key={item} className="relative">
+              <Image
+                source={{ uri: item }}
+                className="h-24 w-24 rounded-lg border border-gray-300"
+              />
+              {!disabled && (
+                <Pressable
+                  className="absolute right-1 top-1 rounded-full bg-white p-1"
+                  onPress={() => removeImage(item)}
+                >
+                  <Trash2 size={16} color={INDICATOR_COLOR.error} />
+                </Pressable>
+              )}
             </View>
-          ) : null
-        }
-        showsHorizontalScrollIndicator={false}
-      />
-      {error && <Text className="mt-1 text-[13px] font-medium text-red-500">{error}</Text>}
+          ))}
+      </View>
+
+      <AppActionSheet {...sheetProps} />
     </View>
   );
 };
-
-export default AppUploadImages;
