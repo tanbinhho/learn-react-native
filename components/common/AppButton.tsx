@@ -158,6 +158,9 @@ export function AppButton({
     </>
   );
 
+  console.log('colorValue', colorValue);
+  console.log('resolvedVariant', resolvedVariant);
+
   return (
     <Pressable
       onPress={handlePress}
@@ -180,13 +183,11 @@ export function AppButton({
         <ActivityIndicator
           size="small"
           color={
-            colorValue
-              ? colorValue
-              : resolvedVariant === 'text' ||
-                  resolvedVariant === 'outlined' ||
-                  resolvedVariant === 'dashed'
-                ? '#4B5563'
-                : '#ffffff'
+            resolvedVariant === 'text' ||
+            resolvedVariant === 'outlined' ||
+            resolvedVariant === 'dashed'
+              ? '#4B5563'
+              : '#ffffff'
           }
         />
       ) : (

@@ -2,7 +2,6 @@ import { AppButton } from '@/components/common/AppButton';
 import { AppForm } from '@/components/common/AppForm';
 import AppInput from '@/components/common/AppInput';
 import { AppText } from '@/components/common/AppText';
-import { SocialButtons } from '@/components/ui/social-buttons';
 import { useLogin } from '@/hooks/auth/useLogin';
 import { useAppToast } from '@/hooks/useAppToast';
 import { useAuthStore } from '@/store/useAuthStore';
@@ -12,7 +11,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { KeyRound, User } from 'lucide-react-native';
 import React, { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Animated, KeyboardAvoidingView, Platform, ScrollView, Text, View } from 'react-native';
+import { Animated, KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as yup from 'yup';
 
@@ -126,14 +125,11 @@ export default function LoginScreen() {
                 />
               </AppForm>
 
-              <View className="my-4 w-full flex-row items-center gap-2">
+              {/* <View className="my-4 w-full flex-row items-center gap-2">
                 <View className="h-[1.5px] flex-1 rounded bg-[#cfe3ff]/20" />
                 <Text className="mx-0.5 text-[15px] font-bold text-[#d7e9ff]">hoặc</Text>
                 <View className="h-[1.5px] flex-1 rounded bg-[#cfe3ff]/20" />
-              </View>
-              <View className="mb-1 flex-row justify-center gap-3">
-                <SocialButtons onGoogle={() => {}} onFacebook={() => {}} onApple={() => {}} />
-              </View>
+              </View> */}
             </View>
           </ScrollView>
         </SafeAreaView>
