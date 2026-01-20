@@ -159,6 +159,7 @@ function TextareaAppInput({
   const sizeClass = sizeStyles[size] ?? sizeStyles.middle;
   const textareaClassName = clsx(
     'rounded-xl bg-white text-gray-900 shadow-sm border transition-colors',
+    '!h-[96px]',
     sizeClass.input,
     borderClass,
     className,
@@ -170,6 +171,7 @@ function TextareaAppInput({
   );
   const resolvedMultiline = inputProps.multiline ?? true;
   const textareaSize = textareaSizeMap[size] ?? 'md';
+
   return (
     <Textarea className={textareaClassName} size={textareaSize}>
       <TextareaInput

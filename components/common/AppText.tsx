@@ -33,7 +33,7 @@ export interface AppTextProps extends TextProps {
 
 const variantMap: Record<TextVariant, string> = {
   heading: 'text-3xl leading-10',
-  title: 'text-xl leading-7',
+  title: 'text-xl leading-6',
   body: 'text-sm leading-5',
   caption: 'text-xs leading-4',
   label: 'text-base leading-6',

@@ -1,8 +1,7 @@
 import { INDICATOR_COLOR } from '@/constants/theme';
 import { useAppActionSheet } from '@/hooks/useAppActionSheet';
-import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
-import { Images, Trash2 } from 'lucide-react-native';
+import { BookImage, Camera, Images, Trash2 } from 'lucide-react-native';
 import React, { useCallback } from 'react';
 import { Image, Pressable, View } from 'react-native';
 import { AppActionSheet } from './AppActionSheet';
@@ -59,12 +58,12 @@ export const AppUploadImages: React.FC<AppUploadImagesProps> = ({
       actions: [
         {
           label: 'Chọn từ thư viện',
-          icon: <Ionicons name="images" size={22} color="#0891b2" />,
+          icon: <BookImage size={20} />,
           onPress: pickImage,
         },
         {
           label: 'Chụp ảnh',
-          icon: <Ionicons name="camera" size={22} color="#0891b2" />,
+          icon: <Camera size={20} />,
           onPress: takePhoto,
         },
       ],

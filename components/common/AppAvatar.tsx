@@ -30,6 +30,7 @@ type Props = {
   showStatus?: boolean;
   status?: 'online' | 'offline';
   className?: string;
+  border?: boolean;
 };
 
 export function AppAvatar({
@@ -40,13 +41,22 @@ export function AppAvatar({
   showStatus = false,
   status = 'online',
   className,
+  border = false,
 }: Props) {
   const styles = SIZE_MAP[size];
   const radius = shape === 'circle' ? 'rounded-full' : 'rounded-xl';
 
   return (
     <View className="relative">
-      <Avatar size={size} className={cn(radius, 'bg-muted items-center justify-center', className)}>
+      <Avatar
+        size={size}
+        className={cn(
+          radius,
+          'bg-muted items-center justify-center',
+          border && 'border-2 border-primary-500',
+          className,
+        )}
+      >
         {src ? (
           <AvatarImage source={{ uri: src }} className={cn('h-full w-full', radius)} />
         ) : (
