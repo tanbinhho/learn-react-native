@@ -1,3 +1,4 @@
+import { useBiometricAuth } from '@/hooks/useBiometricAuth';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import {
   CalendarDays,
@@ -11,6 +12,7 @@ import { Pressable, Text, useWindowDimensions, View } from 'react-native';
 import { BottomBarShape } from './BottomBarShape';
 
 export function CustomTabBar({ state, navigation }: BottomTabBarProps) {
+  const { authenticate } = useBiometricAuth();
   const { width } = useWindowDimensions();
 
   const BAR_HEIGHT = 50;
@@ -67,7 +69,15 @@ export function CustomTabBar({ state, navigation }: BottomTabBarProps) {
           label="Lịch ca"
           icon={CalendarDays}
           focused={state.index === 1}
-          onPress={() => navigation.navigate('schedule')}
+          onPress={async () => {
+            const ok = await authenticate();
+            if (ok) {
+              navigation.navigate('schedule');
+            } else {
+              // Có thể hiển thị thông báo hoặc xử lý khi xác thực thất bại
+              console.log('Xác thực sinh trắc học thất bại hoặc bị hủy.');
+            }
+          }}
         />
         <View style={{ width: 64 }} />
         <Tab

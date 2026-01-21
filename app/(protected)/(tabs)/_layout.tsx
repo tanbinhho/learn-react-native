@@ -1,7 +1,16 @@
 import { CustomTabBar } from '@/components/layout/CustomTabBar';
+import { requestPushPermissionAndToken } from '@/utils';
 import { Tabs } from 'expo-router';
+import { useEffect } from 'react';
 
 export default function TabLayout() {
+  useEffect(() => {
+    (async () => {
+      const token = await requestPushPermissionAndToken();
+      console.log('Expo Push Token:', token);
+    })();
+  }, []);
+
   return (
     <Tabs
       screenOptions={{ headerShown: false, lazy: true }}

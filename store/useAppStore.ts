@@ -8,8 +8,10 @@ export type Language = 'vi' | 'en';
 export type AppStore = {
   theme: ThemeMode;
   language: Language;
+  biometricAuthenticated: boolean;
   setTheme: (theme: ThemeMode) => void;
   setLanguage: (language: Language) => void;
+  setBiometricAuthenticated: (value: boolean) => void;
 };
 
 export const useAppStore = create<AppStore>()(
@@ -17,8 +19,10 @@ export const useAppStore = create<AppStore>()(
     (set) => ({
       theme: 'system',
       language: 'vi',
+      biometricAuthenticated: false,
       setTheme: (theme) => set({ theme }),
       setLanguage: (language) => set({ language }),
+      setBiometricAuthenticated: (value) => set({ biometricAuthenticated: value }),
     }),
     {
       name: 'app-storage',
@@ -26,6 +30,7 @@ export const useAppStore = create<AppStore>()(
       partialize: (state) => ({
         theme: state.theme,
         language: state.language,
+        // Không lưu biometricAuthenticated, chỉ lưu trong bộ nhớ
       }),
     },
   ),

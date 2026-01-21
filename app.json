@@ -7,6 +7,7 @@
     "icon": "./assets/images/icon.png",
     "scheme": "learnapp",
     "userInterfaceStyle": "automatic",
+    "projectId": "b1e2c3d4-5678-4abc-9def-1234567890ab",
     "assetBundlePatterns": [
       "assets/images/icon.png",
       "assets/images/android-icon-foreground.png",
@@ -16,7 +17,10 @@
     ],
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "Ứng dụng cần vị trí để hiển thị bản đồ"
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -28,7 +32,7 @@
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
       "package": "com.tabi.learn_app",
-      "permissions": ["INTERNET", "ACCESS_NETWORK_STATE"]
+      "permissions": ["INTERNET", "ACCESS_NETWORK_STATE", "ACCESS_FINE_LOCATION"]
     },
     "web": {
       "output": "static",

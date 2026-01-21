@@ -41,7 +41,7 @@ const BOX_COLOR_MAP: Record<AppBoxColor, string> = {
 };
 
 const BOX_ICON_COLOR_MAP: Record<AppBoxColor, string> = {
-  default: 'bg-white border',
+  default: 'bg-white border dark:bg-gray-800',
   primary: 'bg-primary-100',
   success: 'bg-success-100',
   warning: 'bg-warning-100',

@@ -12,9 +12,21 @@ import { useAppBootstrap } from '@/hooks/useAppBootstrap';
 import { useAppStore } from '@/store/useAppStore';
 import { ToastProvider } from '@gluestack-ui/toast';
 import { PortalProvider } from '@gorhom/portal';
+import * as Notifications from 'expo-notifications';
 import * as SplashScreen from 'expo-splash-screen';
 import '../global.css';
+
 SplashScreen.preventAutoHideAsync();
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: true,
+    shouldShowBanner: true,
+    shouldShowList: true,
+  }),
+});
 
 export const unstable_settings = {
   anchor: '(protected)',
