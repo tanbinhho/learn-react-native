@@ -17,7 +17,7 @@ export type AppStore = {
 export const useAppStore = create<AppStore>()(
   persist(
     (set) => ({
-      theme: 'system',
+      theme: 'light',
       language: 'vi',
       biometricAuthenticated: false,
       setTheme: (theme) => set({ theme }),
@@ -30,7 +30,6 @@ export const useAppStore = create<AppStore>()(
       partialize: (state) => ({
         theme: state.theme,
         language: state.language,
-        // Không lưu biometricAuthenticated, chỉ lưu trong bộ nhớ
       }),
     },
   ),

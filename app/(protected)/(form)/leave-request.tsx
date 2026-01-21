@@ -4,6 +4,7 @@ import { AppDatePicker } from '@/components/common/AppDatePicker';
 import { AppForm } from '@/components/common/AppForm';
 import AppInput from '@/components/common/AppInput';
 import { AppSelect } from '@/components/common/AppSelect';
+import { AppTabItem, AppTabs } from '@/components/common/AppTabs';
 import { AppText } from '@/components/common/AppText';
 import { AppUploadFile, FileInfo } from '@/components/common/AppUploadFile';
 import { AppUploadImages } from '@/components/common/AppUploadImages';
@@ -72,10 +73,21 @@ const LeaveRequest = () => {
     console.log('submit', value);
   };
 
+  const [tab, setTab] = useState('home');
+  const tabItems: AppTabItem[] = [
+    { key: 'home', label: 'Trang chủ' },
+    { key: 'schedule', label: 'Lịch ca' },
+    { key: 'profile', label: 'Hồ sơ' },
+    { key: 'profile1', label: 'Hồ sơ 1' },
+    { key: 'profile2', label: 'Hồ sơ 2' },
+    { key: 'profile3', label: 'Hồ sơ 3' },
+    { key: 'profile4', label: 'Hồ sơ 4' },
+  ];
   return (
     <ThemedView className="flex-1">
       <AppHeader title="Tạo đơn xin nghỉ" />
       <TabScreenWrapper isTabScreen={false} className="gap-5">
+        <AppTabs items={tabItems} value={tab} onChange={setTab} />
         <AppBox.Primary>
           {DATA.map((item, index) => (
             <FlexRow key={index} className="py-1">

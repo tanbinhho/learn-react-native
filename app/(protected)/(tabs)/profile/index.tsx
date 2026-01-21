@@ -19,7 +19,7 @@ import {
   ShieldAlert,
   ShieldQuestion,
 } from 'lucide-react-native';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Pressable, View } from 'react-native';
 
 // ListAction component
@@ -109,6 +109,10 @@ export default function ProfileTab() {
   const onDeveloping = () => {
     toast.info('Tính năng đang phát triển');
   };
+
+  useEffect(() => {
+    setTheme('light');
+  }, []);
 
   return (
     <ThemedView className="flex-1">
